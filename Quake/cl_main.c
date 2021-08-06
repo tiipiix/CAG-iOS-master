@@ -41,6 +41,8 @@ cvar_t	m_yaw = {"m_yaw","0.022", true};
 cvar_t	m_forward = {"m_forward","1", true};
 cvar_t	m_side = {"m_side","0.8", true};
 
+//TPX: cag
+cvar_t  cl_ch_color = {"cl_ch_color","0",true};
 
 client_static_t	cls;
 client_state_t	cl;
@@ -53,6 +55,8 @@ dlight_t		cl_dlights[MAX_DLIGHTS];
 
 int				cl_numvisedicts;
 entity_t		*cl_visedicts[MAX_VISEDICTS];
+
+extern int ch_color;
 
 /*
 =====================
@@ -712,6 +716,36 @@ void CL_SendCmd (void)
 }
 
 /*
+ =================
+ ch_rcolor
+ =================
+ */
+void ch_rcolor(void)
+{
+    ch_color = 1;
+}
+
+/*
+ =================
+ ch_gcolor
+ =================
+ */
+void ch_gcolor(void)
+{
+    ch_color = 2;
+}
+
+/*
+ =================
+ ch_bcolor
+ =================
+ */
+void ch_bcolor(void)
+{
+    ch_color = 0;
+}
+
+/*
 =================
 CL_Init
 =================
@@ -755,5 +789,12 @@ void CL_Init (void)
 	Cmd_AddCommand ("stop", CL_Stop_f);
 	Cmd_AddCommand ("playdemo", CL_PlayDemo_f);
 	Cmd_AddCommand ("timedemo", CL_TimeDemo_f);
+    
+//  TPX : ChiefAndGun
+    
+    Cvar_RegisterVariable(&cl_ch_color);
+    Cmd_AddCommand ("ch_color_r", ch_rcolor); //CAG crosshair red command
+    Cmd_AddCommand ("ch_color_g", ch_gcolor); //CAG crosshair green command
+    Cmd_AddCommand ("ch_color_b", ch_bcolor); //CAG crosshair blue command
 }
 

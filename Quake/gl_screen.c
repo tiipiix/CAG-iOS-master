@@ -92,6 +92,9 @@ cvar_t		gl_triplebuffer = {"gl_triplebuffer", "1", true };
 
 extern	cvar_t	crosshair;
 
+//TPX: chief and gun crossair color
+int     ch_color;
+
 qboolean	scr_initialized;		// ready to draw
 
 qpic_t		*scr_ram;
@@ -836,6 +839,84 @@ void SCR_TileClear (void)
 }
 
 /*
+ ===================================
+ HUD_Crosshairs
+ 
+ tpx: Draw ChiefAndGun(CAG) crosshairs
+ ==================================
+ */
+void HUD_Crosshairs(void)
+{
+    qpic_t* pic;
+    
+    int    x, y;
+    
+    x = vid.width/2 -16;
+    y = vid.height/2 -16;
+    
+    switch (cl.stats[STAT_ACTIVEWEAPON])
+    {
+        case IT_SHOTGUN:        // SHOTGUN
+            if (ch_color == 0)
+                pic = Draw_CachePic("gfx/ch/ch_sgun.lmp"); // blue ch
+            if (ch_color == 1)
+                pic = Draw_CachePic("gfx/ch/ch_rsgun.lmp"); // red ch
+            if (ch_color == 2)
+                pic = Draw_CachePic("gfx/ch/ch_gsgun.lmp");  //green ch
+            //Draw_Pic(x, y, pic);
+            break;
+        case IT_SUPER_SHOTGUN:    //PISTOL
+            if (ch_color == 0)
+                pic = Draw_CachePic("gfx/ch/ch_pistol.lmp");
+            if (ch_color == 1 )
+                pic = Draw_CachePic("gfx/ch/ch_rpistol.lmp");
+            if (ch_color == 2)
+                pic = Draw_CachePic("gfx/ch/ch_gpistol.lmp");
+            //Draw_Pic(x, y, pic);
+            break;
+        case IT_NAILGUN:        //SMG
+            if (ch_color == 0)
+                pic = Draw_CachePic("gfx/ch/ch_smg.lmp");
+            if (ch_color == 1)
+                pic = Draw_CachePic("gfx/ch/ch_rsmg.lmp");
+            if (ch_color == 2)
+                pic = Draw_CachePic("gfx/ch/ch_gsmg.lmp");
+            //Draw_Pic(x, y, pic);
+            break;
+        case IT_SUPER_NAILGUN:    //PLASMA RIFLE
+            if (ch_color == 0)
+                pic = Draw_CachePic("gfx/ch/ch_plasma.lmp");
+            if (ch_color == 1)
+                pic = Draw_CachePic("gfx/ch/ch_rplasma.lmp");
+            if (ch_color == 2)
+                pic = Draw_CachePic("gfx/ch/ch_gplasma.lmp");
+            //Draw_Pic(x, y, pic);
+            break;
+        case IT_GRENADE_LAUNCHER: //PLASMA PISTOL
+            if (ch_color == 0)
+                pic = Draw_CachePic("gfx/ch/ch_plasma.lmp");
+            if (ch_color == 1)
+                pic = Draw_CachePic("gfx/ch/ch_rplasma.lmp");
+            if (ch_color == 2)
+                pic = Draw_CachePic("gfx/ch/ch_gplasma.lmp");
+            //Draw_Pic(x, y, pic);
+            break;
+        case IT_ROCKET_LAUNCHER: //ROCKET_LAUNCHER
+            if (ch_color == 0)
+                pic = Draw_CachePic("gfx/ch/ch_rocket.lmp");
+            if (ch_color == 1)
+                pic = Draw_CachePic("gfx/ch/ch_rrocket.lmp");
+            if (ch_color == 2)
+                pic = Draw_CachePic("gfx/ch/ch_grocket.lmp");
+            //Draw_Pic(x, y, pic);
+            break;
+    }
+    Draw_Pic(x, y, pic);
+    //GL_SetCanvas(CANVAS_CROSSHAIR);
+    Draw_Character (scr_vrect.x + scr_vrect.width/2, scr_vrect.y + scr_vrect.height/2, '+');
+}
+
+/*
 ==================
 SCR_UpdateScreen
 
@@ -932,7 +1013,7 @@ void SCR_UpdateScreen (void)
 	else
 	{
 		if (crosshair.value)
-			Draw_Character (scr_vrect.x + scr_vrect.width/2, scr_vrect.y + scr_vrect.height/2, '+');
+            HUD_Crosshairs();
 		
 		SCR_DrawRam ();
 		SCR_DrawNet ();
