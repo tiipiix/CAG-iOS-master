@@ -1022,137 +1022,223 @@ void Sbar_DrawFace (void)
 }
 
 /*
-===============
-Sbar_Draw
-===============
-*/
+ ===============
+ HUD_DrawHealth
+ 
+ TPX:
+ chief and gun health bar
+ ===============
+ */
+void HUD_DrawHealth(void)
+{
+    qpic_t* pic;
+    float x, y;
+    
+    //x = -55;
+    //y = -150;
+    pic = Draw_CachePic("gfx/hud/health0.lmp");//debug
+    x = vid.width/2 - pic->width/2;
+    y = 0;
+    
+    scr_copyeverything = 1;
+    scr_fullupdate = 0;
+    
+    if (cl.stats[STAT_HEALTH] >= 100)
+    {
+        pic = Draw_CachePic("gfx/hud/health10.lmp");
+        Draw_Pic(x, y, pic);
+    }
+    if (cl.stats[STAT_HEALTH] >= 90)
+    {
+        pic = Draw_CachePic("gfx/hud/health9.lmp");
+        Draw_Pic(x, y, pic);
+    }
+    if (cl.stats[STAT_HEALTH] >= 80)
+    {
+        pic = Draw_CachePic("gfx/hud/health8.lmp");
+        Draw_Pic(x, y, pic);
+    }
+    if (cl.stats[STAT_HEALTH] >= 70)
+    {
+        pic = Draw_CachePic("gfx/hud/health7.lmp");
+        Draw_Pic(x, y, pic);
+    }
+    if (cl.stats[STAT_HEALTH] >= 60)
+    {
+        pic = Draw_CachePic("gfx/hud/health6.lmp");
+        Draw_Pic(x, y, pic);
+    }
+    if (cl.stats[STAT_HEALTH] >= 50)
+    {
+        pic = Draw_CachePic("gfx/hud/health5.lmp");
+        Draw_Pic(x, y, pic);
+    }
+    if (cl.stats[STAT_HEALTH] >= 40)
+    {
+        pic = Draw_CachePic("gfx/hud/health4.lmp");
+        Draw_Pic(x, y, pic);
+    }
+    if (cl.stats[STAT_HEALTH] >= 30)
+    {
+        pic = Draw_CachePic("gfx/hud/health3.lmp");
+        Draw_Pic(x, y, pic);
+    }
+    if (cl.stats[STAT_HEALTH] >= 20)
+    {
+        pic = Draw_CachePic("gfx/hud/health2.lmp");
+        Draw_Pic(x, y, pic);
+    }
+    if (cl.stats[STAT_HEALTH] >= 10)
+    {
+        pic = Draw_CachePic("gfx/hud/health1.lmp");
+        Draw_Pic(x, y, pic);
+    }
+    if (cl.stats[STAT_HEALTH] >= 0)
+    {
+        pic = Draw_CachePic("gfx/hud/health0.lmp");
+        Draw_Pic(x, y, pic);
+    }
+    //GL_SetCanvas(CANVAS_MENU);
+}
+
+/*
+ ===============
+ Sbar_Draw
+ ===============
+ */
 void Sbar_Draw (void)
 {
-	if (scr_con_current == vid.height)
-		return;		// console is full screen
-
+    if (scr_con_current == vid.height)
+        return;        // console is full screen
+    
     // until I can figure out why it doesn't draw every frame, disabled this -tkidd
-//    if (sb_updates >= vid.numpages)
-//        return;
-
-	scr_copyeverything = 1;
-
-	sb_updates++;
-
-	if (sb_lines && vid.width > 320) 
-		Draw_TileClear (0, vid.height - sb_lines, vid.width, sb_lines);
-
-	if (sb_lines > 24)
-	{
-		Sbar_DrawInventory ();
-		if (cl.maxclients != 1)
-			Sbar_DrawFrags ();
-	}
-
-	if (sb_showscores || cl.stats[STAT_HEALTH] <= 0)
-	{
-		Sbar_DrawPic (0, 0, sb_scorebar);
-		Sbar_DrawScoreboard ();
-		sb_updates = 0;
-	}
-	else if (sb_lines)
-	{
-        Sbar_BeginPicSequence (32);
-
-        Sbar_DrawPicInSequence (0, 0, sb_sbar);
-
-   // keys (hipnotic only)
-      //MED 01/04/97 moved keys here so they would not be overwritten
-      if (hipnotic)
-      {
-         if (cl.items & IT_KEY1)
-            Sbar_DrawPicInSequence (209, 3, sb_items[0]);
-         if (cl.items & IT_KEY2)
-            Sbar_DrawPicInSequence (209, 12, sb_items[1]);
-      }
-   // armor
-		if (cl.items & IT_INVULNERABILITY)
-		{
-			Sbar_DrawNum (24, 0, 666, 3, 1);
-			Sbar_DrawPicInSequence (0, 0, draw_disc);
-		}
-		else
-		{
-			if (rogue)
-			{
-				Sbar_DrawNum (24, 0, cl.stats[STAT_ARMOR], 3,
-								cl.stats[STAT_ARMOR] <= 25);
-				if (cl.items & RIT_ARMOR3)
-					Sbar_DrawPicInSequence (0, 0, sb_armor[2]);
-				else if (cl.items & RIT_ARMOR2)
-					Sbar_DrawPicInSequence (0, 0, sb_armor[1]);
-				else if (cl.items & RIT_ARMOR1)
-					Sbar_DrawPicInSequence (0, 0, sb_armor[0]);
-			}
-			else
-			{
-				Sbar_DrawNum (24, 0, cl.stats[STAT_ARMOR], 3
-				, cl.stats[STAT_ARMOR] <= 25);
-				if (cl.items & IT_ARMOR3)
-					Sbar_DrawPicInSequence (0, 0, sb_armor[2]);
-				else if (cl.items & IT_ARMOR2)
-					Sbar_DrawPicInSequence (0, 0, sb_armor[1]);
-				else if (cl.items & IT_ARMOR1)
-					Sbar_DrawPicInSequence (0, 0, sb_armor[0]);
-			}
-		}
-
-        Sbar_EndPicSequence();
-        
-	// face
-		Sbar_DrawFace ();
-
-        Sbar_BeginPicSequence (32);
-        
-	// health
-		Sbar_DrawNum (136, 0, cl.stats[STAT_HEALTH], 3
-		, cl.stats[STAT_HEALTH] <= 25);
-
-	// ammo icon
-		if (rogue)
-		{
-			if (cl.items & RIT_SHELLS)
-				Sbar_DrawPicInSequence (224, 0, sb_ammo[0]);
-			else if (cl.items & RIT_NAILS)
-				Sbar_DrawPicInSequence (224, 0, sb_ammo[1]);
-			else if (cl.items & RIT_ROCKETS)
-				Sbar_DrawPicInSequence (224, 0, sb_ammo[2]);
-			else if (cl.items & RIT_CELLS)
-				Sbar_DrawPicInSequence (224, 0, sb_ammo[3]);
-			else if (cl.items & RIT_LAVA_NAILS)
-				Sbar_DrawPicInSequence (224, 0, rsb_ammo[0]);
-			else if (cl.items & RIT_PLASMA_AMMO)
-				Sbar_DrawPicInSequence (224, 0, rsb_ammo[1]);
-			else if (cl.items & RIT_MULTI_ROCKETS)
-				Sbar_DrawPicInSequence (224, 0, rsb_ammo[2]);
-		}
-		else
-		{
-			if (cl.items & IT_SHELLS)
-				Sbar_DrawPicInSequence (224, 0, sb_ammo[0]);
-			else if (cl.items & IT_NAILS)
-				Sbar_DrawPicInSequence (224, 0, sb_ammo[1]);
-			else if (cl.items & IT_ROCKETS)
-				Sbar_DrawPicInSequence (224, 0, sb_ammo[2]);
-			else if (cl.items & IT_CELLS)
-				Sbar_DrawPicInSequence (224, 0, sb_ammo[3]);
-		}
-
-		Sbar_DrawNum (248, 0, cl.stats[STAT_AMMO], 3,
-					  cl.stats[STAT_AMMO] <= 10);
-        
-        Sbar_EndPicSequence();
-	}
-
-	if (vid.width > 320) {
-		if (cl.gametype == GAME_DEATHMATCH)
-			Sbar_MiniDeathmatchOverlay ();
-	}
+    //    if (sb_updates >= vid.numpages)
+    //        return;
+    
+    scr_copyeverything = 1;
+    
+    sb_updates++;
+    
+    //TPX:
+    HUD_DrawHealth(); //CAG custom heatlh bar
+    
+    /*
+     
+     if (sb_lines && vid.width > 320)
+     Draw_TileClear (0, vid.height - sb_lines, vid.width, sb_lines);
+     
+     if (sb_lines > 24)
+     {
+     Sbar_DrawInventory ();
+     if (cl.maxclients != 1)
+     Sbar_DrawFrags ();
+     }
+     
+     if (sb_showscores || cl.stats[STAT_HEALTH] <= 0)
+     {
+     Sbar_DrawPic (0, 0, sb_scorebar);
+     Sbar_DrawScoreboard ();
+     sb_updates = 0;
+     }
+     else if (sb_lines)
+     {
+     Sbar_BeginPicSequence (32);
+     
+     Sbar_DrawPicInSequence (0, 0, sb_sbar);
+     
+     // keys (hipnotic only)
+     //MED 01/04/97 moved keys here so they would not be overwritten
+     if (hipnotic)
+     {
+     if (cl.items & IT_KEY1)
+     Sbar_DrawPicInSequence (209, 3, sb_items[0]);
+     if (cl.items & IT_KEY2)
+     Sbar_DrawPicInSequence (209, 12, sb_items[1]);
+     }
+     // armor
+     if (cl.items & IT_INVULNERABILITY)
+     {
+     Sbar_DrawNum (24, 0, 666, 3, 1);
+     Sbar_DrawPicInSequence (0, 0, draw_disc);
+     }
+     else
+     {
+     if (rogue)
+     {
+     Sbar_DrawNum (24, 0, cl.stats[STAT_ARMOR], 3,
+     cl.stats[STAT_ARMOR] <= 25);
+     if (cl.items & RIT_ARMOR3)
+     Sbar_DrawPicInSequence (0, 0, sb_armor[2]);
+     else if (cl.items & RIT_ARMOR2)
+     Sbar_DrawPicInSequence (0, 0, sb_armor[1]);
+     else if (cl.items & RIT_ARMOR1)
+     Sbar_DrawPicInSequence (0, 0, sb_armor[0]);
+     }
+     else
+     {
+     Sbar_DrawNum (24, 0, cl.stats[STAT_ARMOR], 3
+     , cl.stats[STAT_ARMOR] <= 25);
+     if (cl.items & IT_ARMOR3)
+     Sbar_DrawPicInSequence (0, 0, sb_armor[2]);
+     else if (cl.items & IT_ARMOR2)
+     Sbar_DrawPicInSequence (0, 0, sb_armor[1]);
+     else if (cl.items & IT_ARMOR1)
+     Sbar_DrawPicInSequence (0, 0, sb_armor[0]);
+     }
+     }
+     
+     Sbar_EndPicSequence();
+     
+     // face
+     Sbar_DrawFace ();
+     
+     Sbar_BeginPicSequence (32);
+     
+     // health
+     Sbar_DrawNum (136, 0, cl.stats[STAT_HEALTH], 3
+     , cl.stats[STAT_HEALTH] <= 25);
+     
+     // ammo icon
+     if (rogue)
+     {
+     if (cl.items & RIT_SHELLS)
+     Sbar_DrawPicInSequence (224, 0, sb_ammo[0]);
+     else if (cl.items & RIT_NAILS)
+     Sbar_DrawPicInSequence (224, 0, sb_ammo[1]);
+     else if (cl.items & RIT_ROCKETS)
+     Sbar_DrawPicInSequence (224, 0, sb_ammo[2]);
+     else if (cl.items & RIT_CELLS)
+     Sbar_DrawPicInSequence (224, 0, sb_ammo[3]);
+     else if (cl.items & RIT_LAVA_NAILS)
+     Sbar_DrawPicInSequence (224, 0, rsb_ammo[0]);
+     else if (cl.items & RIT_PLASMA_AMMO)
+     Sbar_DrawPicInSequence (224, 0, rsb_ammo[1]);
+     else if (cl.items & RIT_MULTI_ROCKETS)
+     Sbar_DrawPicInSequence (224, 0, rsb_ammo[2]);
+     }
+     else
+     {
+     if (cl.items & IT_SHELLS)
+     Sbar_DrawPicInSequence (224, 0, sb_ammo[0]);
+     else if (cl.items & IT_NAILS)
+     Sbar_DrawPicInSequence (224, 0, sb_ammo[1]);
+     else if (cl.items & IT_ROCKETS)
+     Sbar_DrawPicInSequence (224, 0, sb_ammo[2]);
+     else if (cl.items & IT_CELLS)
+     Sbar_DrawPicInSequence (224, 0, sb_ammo[3]);
+     }
+     
+     Sbar_DrawNum (248, 0, cl.stats[STAT_AMMO], 3,
+     cl.stats[STAT_AMMO] <= 10);
+     
+     Sbar_EndPicSequence();
+     }
+     
+     if (vid.width > 320) {
+     if (cl.gametype == GAME_DEATHMATCH)
+     Sbar_MiniDeathmatchOverlay ();
+     }
+     */
 }
 
 //=============================================================================
