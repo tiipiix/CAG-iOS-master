@@ -1037,8 +1037,8 @@ void HUD_DrawHealth(void)
     //x = -55;
     //y = -150;
     pic = Draw_CachePic("gfx/hud/health0.lmp");//debug
-    x = vid.width/2 - pic->width/2;
-    y = 0;
+    x = (vid.width/2) - (pic->width/2);
+    y = -20;
     
     scr_copyeverything = 1;
     scr_fullupdate = 0;
@@ -1099,6 +1099,10 @@ void HUD_DrawHealth(void)
         Draw_Pic(x, y, pic);
     }
     //GL_SetCanvas(CANVAS_MENU);
+    
+//TPX: debug test, the vid zone is not equal to the reel screen space o_O
+//WHY ???
+    //Draw_Fill(-50, -50, vid.width, vid.height, 0xf0);
 }
 
 /*

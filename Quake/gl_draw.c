@@ -1278,6 +1278,7 @@ void Draw_ConsoleBackground (int lines)
 		Draw_Pic(0, lines - vid.height, conback);
 	else
 		Draw_AlphaPic (0, lines - vid.height, conback, (float)(1.2 * lines)/y);
+        //Draw_AlphaPic (0, lines - vid.height, conback, (float)(1.2 * lines)/y);
 }
 
 
@@ -1475,8 +1476,8 @@ void GL_Set2D (void)
 {
     GL_Identity (gl_textandfill_matrix);
     
-    GL_Translate (gl_textandfill_matrix, -2.0, 1.2, 0.0);
-    GL_Scale (gl_textandfill_matrix, 4.0 / vid.width, -4.0 / vid.height, 1.0);
+    GL_Translate (gl_textandfill_matrix, -3.0, 1.8, 0.0);//TPX fix pos
+    GL_Scale (gl_textandfill_matrix, 6.0 / vid.width, -4.0 / vid.height, 1.0);//TPX fix size
     
     GL_MultiplyLeft (gl_textandfill_matrix, gl_translation);
     

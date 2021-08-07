@@ -541,8 +541,10 @@ void	VID_Init (unsigned char *palette)
     
     d_8to24table = malloc(256 * sizeof(unsigned));
     
-    vid.width = vid.conwidth = vid.maxwarpwidth = WARP_WIDTH;
-    vid.height = vid.conheight = vid.maxwarpheight = WARP_HEIGHT;
+    vid.width = vid.maxwarpwidth = WARP_WIDTH;
+    //vid.width = vid.conwidth = vid.maxwarpwidth = WARP_WIDTH;
+    vid.height = vid.maxwarpheight = WARP_HEIGHT;
+    //vid.height = vid.conheight = vid.maxwarpheight = WARP_HEIGHT;
     vid.colormap = host_colormap;
     vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
     
