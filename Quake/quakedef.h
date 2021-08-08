@@ -237,7 +237,7 @@ typedef struct
 #include "net.h"
 #include "protocol.h"
 #include "cmd.h"
-#include "sbar.h"
+#include "HUD.h"
 #include "sound.h"
 #include "render.h"
 #include "client.h"

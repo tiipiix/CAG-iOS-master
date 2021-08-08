@@ -92,9 +92,6 @@ cvar_t		gl_triplebuffer = {"gl_triplebuffer", "1", true };
 
 extern	cvar_t	crosshair;
 
-//TPX: chief and gun crossair color
-int     ch_color;
-
 qboolean	scr_initialized;		// ready to draw
 
 qpic_t		*scr_ram;
@@ -292,7 +289,7 @@ static void SCR_CalcRefdef (void)
 	vid.recalc_refdef = 0;
 
 // force the status bar to redraw
-	Sbar_Changed ();
+	//Sbar_Changed ();
 
 //========================================
 	
@@ -565,7 +562,7 @@ void SCR_SetUpToDrawConsole (void)
 
 	if (clearconsole++ < vid.numpages)
 	{
-		Sbar_Changed ();
+		//Sbar_Changed ();
 	}
 	else if (clearnotify++ < vid.numpages)
 	{
@@ -694,7 +691,7 @@ void SCR_BeginLoadingPlaque (void)
 
 	scr_drawloading = true;
 	scr_fullupdate = 0;
-	Sbar_Changed ();
+	//Sbar_Changed ();
 	SCR_UpdateScreen ();
 	scr_drawloading = false;
 
@@ -839,84 +836,6 @@ void SCR_TileClear (void)
 }
 
 /*
- ===================================
- HUD_Crosshairs
- 
- tpx: Draw ChiefAndGun(CAG) crosshairs
- ==================================
- */
-void HUD_Crosshairs(void)
-{
-    qpic_t* pic;
-    
-    int    x, y;
-    
-    x = vid.width/2 -16;
-    y = vid.height/2 -16;
-    
-    switch (cl.stats[STAT_ACTIVEWEAPON])
-    {
-        case IT_SHOTGUN:        // SHOTGUN
-            if (ch_color == 0)
-                pic = Draw_CachePic("gfx/ch/ch_sgun.lmp"); // blue ch
-            if (ch_color == 1)
-                pic = Draw_CachePic("gfx/ch/ch_rsgun.lmp"); // red ch
-            if (ch_color == 2)
-                pic = Draw_CachePic("gfx/ch/ch_gsgun.lmp");  //green ch
-            //Draw_Pic(x, y, pic);
-            break;
-        case IT_SUPER_SHOTGUN:    //PISTOL
-            if (ch_color == 0)
-                pic = Draw_CachePic("gfx/ch/ch_pistol.lmp");
-            if (ch_color == 1 )
-                pic = Draw_CachePic("gfx/ch/ch_rpistol.lmp");
-            if (ch_color == 2)
-                pic = Draw_CachePic("gfx/ch/ch_gpistol.lmp");
-            //Draw_Pic(x, y, pic);
-            break;
-        case IT_NAILGUN:        //SMG
-            if (ch_color == 0)
-                pic = Draw_CachePic("gfx/ch/ch_smg.lmp");
-            if (ch_color == 1)
-                pic = Draw_CachePic("gfx/ch/ch_rsmg.lmp");
-            if (ch_color == 2)
-                pic = Draw_CachePic("gfx/ch/ch_gsmg.lmp");
-            //Draw_Pic(x, y, pic);
-            break;
-        case IT_SUPER_NAILGUN:    //PLASMA RIFLE
-            if (ch_color == 0)
-                pic = Draw_CachePic("gfx/ch/ch_plasma.lmp");
-            if (ch_color == 1)
-                pic = Draw_CachePic("gfx/ch/ch_rplasma.lmp");
-            if (ch_color == 2)
-                pic = Draw_CachePic("gfx/ch/ch_gplasma.lmp");
-            //Draw_Pic(x, y, pic);
-            break;
-        case IT_GRENADE_LAUNCHER: //PLASMA PISTOL
-            if (ch_color == 0)
-                pic = Draw_CachePic("gfx/ch/ch_plasma.lmp");
-            if (ch_color == 1)
-                pic = Draw_CachePic("gfx/ch/ch_rplasma.lmp");
-            if (ch_color == 2)
-                pic = Draw_CachePic("gfx/ch/ch_gplasma.lmp");
-            //Draw_Pic(x, y, pic);
-            break;
-        case IT_ROCKET_LAUNCHER: //ROCKET_LAUNCHER
-            if (ch_color == 0)
-                pic = Draw_CachePic("gfx/ch/ch_rocket.lmp");
-            if (ch_color == 1)
-                pic = Draw_CachePic("gfx/ch/ch_rrocket.lmp");
-            if (ch_color == 2)
-                pic = Draw_CachePic("gfx/ch/ch_grocket.lmp");
-            //Draw_Pic(x, y, pic);
-            break;
-    }
-    Draw_Pic(x, y, pic);
-    //GL_SetCanvas(CANVAS_CROSSHAIR);
-    Draw_Character (scr_vrect.x + scr_vrect.width/2, scr_vrect.y + scr_vrect.height/2, '+');
-}
-
-/*
 ==================
 SCR_UpdateScreen
 
@@ -991,7 +910,7 @@ void SCR_UpdateScreen (void)
 
 	if (scr_drawdialog)
 	{
-		Sbar_Draw ();
+		//Sbar_Draw ();
 		Draw_FadeScreen ();
 		SCR_DrawNotifyString ();
 		scr_copyeverything = true;
@@ -999,15 +918,15 @@ void SCR_UpdateScreen (void)
 	else if (scr_drawloading)
 	{
 		SCR_DrawLoading ();
-		Sbar_Draw ();
+		//Sbar_Draw ();
 	}
 	else if (cl.intermission == 1 && key_dest == key_game)
 	{
-		Sbar_IntermissionOverlay ();
+		//Sbar_IntermissionOverlay ();
 	}
 	else if (cl.intermission == 2 && key_dest == key_game)
 	{
-		Sbar_FinaleOverlay ();
+		//Sbar_FinaleOverlay ();
 		SCR_CheckDrawCenterString ();
 	}
 	else
@@ -1015,12 +934,15 @@ void SCR_UpdateScreen (void)
 		if (crosshair.value)
             HUD_Crosshairs();
 		
+        HUD_DrawHealth ();
+        HUD_Weapons ();
+        
 		SCR_DrawRam ();
 		SCR_DrawNet ();
 		SCR_DrawTurtle ();
 		SCR_DrawPause ();
 		SCR_CheckDrawCenterString ();
-		Sbar_Draw ();
+		//Sbar_Draw ();
 		SCR_DrawConsole ();	
 		M_Draw ();
 	}

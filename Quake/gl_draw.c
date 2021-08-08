@@ -1435,7 +1435,7 @@ void Draw_FadeScreen (void)
 
     glDisable(GL_BLEND);
 
-    Sbar_Changed();
+    //Sbar_Changed();
 }
 
 //=============================================================================

@@ -473,8 +473,8 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height)
 
 void GL_EndRendering (void)
 {
-    if (fullsbardraw)
-        Sbar_Changed();
+    //if (fullsbardraw)
+        //Sbar_Changed();
 }
 
 void	VID_SetPalette (unsigned char *palette)
