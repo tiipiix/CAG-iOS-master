@@ -179,7 +179,7 @@ void HUD_Weapons(void)
     qpic_t* pic2;
     float x, y;
     
-    x = 0;
+    x = vid.width;
     y = 0;
     pic2 = Draw_CachePic("");
     

@@ -803,7 +803,17 @@ void R_DrawAliasModel (entity_t *e)
 
     anim = (int)(cl.time*10) & 3;
     GL_Bind(paliashdr->gl_texturenum[currententity->skinnum][anim]);
-
+    
+    //TPX: HACK, as i'am not able to make the fullbrights support working,
+    //i use this hack to draw "skin1" instead of "skin0" if model is in the dark.
+    //"skin1" for models have to be full black textures with somes pixels in color
+    //wich will be rendered fullbright.
+    if (ambientlight < 16)
+    {
+        GL_Bind(paliashdr->fb_texturenum[currententity->skinnum+1][anim]);
+        ambientlight = shadelight = 16;
+    }
+    
 	// we can't dynamically colormap textures, so they are cached
 	// seperately for the players.  Heads are just uncolored.
 	if (currententity->colormap != vid.colormap && !gl_nocolors.value)

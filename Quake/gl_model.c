@@ -1414,6 +1414,7 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 {
 	int		i, j, k;
 	char	name[32];
+    char    name_fb[32];
 	int		s;
 //    byte    *copy;
 	byte	*skin;
@@ -1447,6 +1448,14 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 			pheader->gl_texturenum[i][3] =
 				GL_LoadTexture (name, pheader->skinwidth, 
 				pheader->skinheight, (byte *)(pskintype + 1), true, false);
+            
+            pheader->fb_texturenum[i][0] =
+            pheader->fb_texturenum[i][1] =
+            pheader->fb_texturenum[i][2] =
+            pheader->fb_texturenum[i][3] =
+                GL_LoadTexture (name_fb, pheader->skinwidth,
+                            pheader->skinheight, (byte *)(pskintype + 1), true, false);
+            
 			pskintype = (daliasskintype_t *)((byte *)(pskintype+1) + s);
 		} else {
 			// animating skin group.  yuck.

@@ -310,6 +310,10 @@ typedef struct {
 	int					posedata;	// numposes*poseverts trivert_t
 	int					commands;	// gl command list with embedded s/t
 	int					gl_texturenum[MAX_SKINS][4];
+    
+    //TPX: glowing fullbright HACK
+    int                 fb_texturenum[MAX_SKINS][4];
+    
 	int					texels[MAX_SKINS];	// only for player skins
 	maliasframedesc_t	frames[1];	// variable sized
 } aliashdr_t;
