@@ -553,6 +553,225 @@ lastposenum = posenum;
     Hunk_FreeToLowMark (mark);
 }
 
+/*
+ =============
+ GL_DrawAliasFrame2
+ 
+ TPX: used for fullbright mask
+ =============
+ */
+void GL_DrawAliasFrame2 (aliashdr_t *paliashdr, int posenum)
+{
+    //    float    s, t;
+    float     l;
+    //    int        i, j;
+    //    int        index;
+    //    trivertx_t    *v, *verts;
+    trivertx_t    *verts;
+    //    int        list;
+    int        *order;
+    //    vec3_t    point;
+    //    float    *normal;
+    int        count;
+    
+    lastposenum = posenum;
+    
+    int mark = Hunk_LowMark ();
+    
+    int fansegmentcount = 0;
+    int stripsegmentcount = 0;
+    
+    order = (int *)((byte *)paliashdr + paliashdr->commands);
+    
+    while (1)
+    {
+        count = *order++;
+        if (!count)
+            break;        // done
+        if (count < 0)
+        {
+            fansegmentcount++;
+            order -= count;
+            order -= count;
+        }
+        else
+        {
+            stripsegmentcount++;
+            order += count;
+            order += count;
+        }
+    }
+    
+    GLsizei* fansegments = NULL;
+    GLsizei* stripsegments = NULL;
+    
+    if (fansegmentcount > 0)
+    {
+        fansegments = Hunk_AllocName (fansegmentcount * sizeof(GLsizei), "fan_segments");
+    }
+    
+    if (stripsegmentcount > 0)
+    {
+        stripsegments = Hunk_AllocName (stripsegmentcount * sizeof(GLsizei), "strip_segments");
+    }
+    
+    int fansegmentpos = 0;
+    int stripsegmentpos = 0;
+    
+    int fancount = 0;
+    int stripcount = 0;
+    
+    order = (int *)((byte *)paliashdr + paliashdr->commands);
+    
+    while (1)
+    {
+        count = *order++;
+        if (!count)
+            break;        // done
+        if (count < 0)
+        {
+            fansegments[fansegmentpos++] = -count;
+            fancount -= count;
+            order -= count;
+            order -= count;
+        }
+        else
+        {
+            stripsegments[stripsegmentpos++] = count;
+            stripcount += count;
+            order += count;
+            order += count;
+        }
+    }
+    
+    GLfloat* fanvertices = NULL;
+    GLfloat* stripvertices = NULL;
+    
+    if (fancount > 0)
+    {
+        fanvertices = Hunk_AllocName (fancount * 6 * sizeof(GLfloat), "fan_vertices");
+    }
+    
+    if (stripcount > 0)
+    {
+        stripvertices = Hunk_AllocName (stripcount * 6 * sizeof(GLfloat), "strip_vertices");
+    }
+    
+    int fanvertexpos = 0;
+    int stripvertexpos = 0;
+    
+    verts = (trivertx_t *)((byte *)paliashdr + paliashdr->posedata);
+    verts += posenum * paliashdr->poseverts;
+    order = (int *)((byte *)paliashdr + paliashdr->commands);
+    
+    while (1)
+    {
+        // get the vertex count and primitive type
+        count = *order++;
+        if (!count)
+            break;        // done
+        if (count < 0)
+        {
+            do
+            {
+                // normals and vertexes come from the frame list
+                fanvertices[fanvertexpos++] = verts->v[0];
+                fanvertices[fanvertexpos++] = verts->v[1];
+                fanvertices[fanvertexpos++] = verts->v[2];
+                
+                l = shadedots[verts->lightnormalindex] * shadelight;
+                fanvertices[fanvertexpos++] = l;
+                
+                // texture coordinates come from the draw list
+                fanvertices[fanvertexpos++] = ((float *)order)[0];
+                fanvertices[fanvertexpos++] = ((float *)order)[1];
+                
+                order += 2;
+                verts++;
+            } while (++count);
+        }
+        else
+        {
+            do
+            {
+                // normals and vertexes come from the frame list
+                stripvertices[stripvertexpos++] = verts->v[0];
+                stripvertices[stripvertexpos++] = verts->v[1];
+                stripvertices[stripvertexpos++] = verts->v[2];
+                
+                l = shadedots[verts->lightnormalindex] * shadelight;
+                stripvertices[stripvertexpos++] = l;
+                
+                // texture coordinates come from the draw list
+                stripvertices[stripvertexpos++] = ((float *)order)[0];
+                stripvertices[stripvertexpos++] = ((float *)order)[1];
+                
+                order += 2;
+                verts++;
+            } while (--count);
+        }
+    }
+    
+    if (fancount > 0)
+    {
+        GLuint vertexbuffer;
+        glGenBuffers(1, &vertexbuffer);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glBufferData(GL_ARRAY_BUFFER, fancount * 6 * sizeof(GLfloat), fanvertices, GL_STATIC_DRAW);
+        
+        glEnableVertexAttribArray(gl_alphapolygon1textureprogram_position);
+        glVertexAttribPointer(gl_alphapolygon1textureprogram_position, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid *)0);
+        glEnableVertexAttribArray(gl_alphapolygon1textureprogram_texcoords);
+        glVertexAttribPointer(gl_alphapolygon1textureprogram_texcoords, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid *)(4 * sizeof(GLfloat)));
+        
+        GLsizei offset = 0;
+        for (int i = 0; i < fansegmentcount; i++)
+        {
+            GLsizei count = fansegments[i];
+            glDrawArrays(GL_TRIANGLE_FAN, offset, count);
+            offset += count;
+        }
+        
+        glDisableVertexAttribArray(gl_alphapolygon1textureprogram_texcoords);
+        glDisableVertexAttribArray(gl_alphapolygon1textureprogram_position);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        
+        glDeleteBuffers(1, &vertexbuffer);
+    }
+    
+    if (stripcount > 0)
+    {
+        GLuint vertexbuffer;
+        glGenBuffers(1, &vertexbuffer);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glBufferData(GL_ARRAY_BUFFER, stripcount * 6 * sizeof(GLfloat), stripvertices, GL_STATIC_DRAW);
+        
+        glEnableVertexAttribArray(gl_alphapolygon1textureprogram_position);
+        glVertexAttribPointer(gl_alphapolygon1textureprogram_position, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid *)0);
+        glEnableVertexAttribArray(gl_alphapolygon1textureprogram_texcoords);
+        glVertexAttribPointer(gl_alphapolygon1textureprogram_texcoords, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid *)(4 * sizeof(GLfloat)));
+        
+        GLsizei offset = 0;
+        for (int i = 0; i < stripsegmentcount; i++)
+        {
+            GLsizei count = stripsegments[i];
+            glDrawArrays(GL_TRIANGLE_STRIP, offset, count);
+            offset += count;
+        }
+        
+        glDisableVertexAttribArray(gl_alphapolygon1textureprogram_texcoords);
+        glDisableVertexAttribArray(gl_alphapolygon1textureprogram_position);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        
+        glDeleteBuffers(1, &vertexbuffer);
+    }
+    
+    Hunk_FreeToLowMark (mark);
+}
 
 /*
 =============
@@ -649,8 +868,6 @@ void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 	}
 }
 
-
-
 /*
 =================
 R_SetupAliasFrame
@@ -680,6 +897,35 @@ void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr)
 	GL_DrawAliasFrame (paliashdr, pose);
 }
 
+/*
+ =================
+ R_SetupAliasFrame2
+ 
+ TPX: used for fullbright mask
+ =================
+ */
+void R_SetupAliasFrame2 (int frame, aliashdr_t *paliashdr)
+{
+    int                pose, numposes;
+    float            interval;
+    
+    if ((frame >= paliashdr->numframes) || (frame < 0))
+    {
+        Con_DPrintf ("R_AliasSetupFrame: no such frame %d\n", frame);
+        frame = 0;
+    }
+    
+    pose = paliashdr->frames[frame].firstpose;
+    numposes = paliashdr->frames[frame].numposes;
+    
+    if (numposes > 1)
+    {
+        interval = paliashdr->frames[frame].interval;
+        pose += (int)(cl.time / interval) % numposes;
+    }
+    GL_DrawAliasFrame2 (paliashdr, pose);
+}
+
 
 
 /*
@@ -702,6 +948,7 @@ void R_DrawAliasModel (entity_t *e)
 //    float        s, t, an;
     float        an;
 	int			anim;
+    texture_t   *tx, *fb;
 
 	clmodel = currententity->model;
 
@@ -778,8 +1025,6 @@ void R_DrawAliasModel (entity_t *e)
 	//
 	// draw all the triangles
 	//
-
-    GL_Use (gl_intensitypolygon1textureprogram);
     
     GL_DisableMultitexture();
 
@@ -799,31 +1044,36 @@ void R_DrawAliasModel (entity_t *e)
 
     R_ApplyProjection ();
 
-    glUniformMatrix4fv(gl_intensitypolygon1textureprogram_transform, 1, 0, gl_polygon_matrix);
-
     anim = (int)(cl.time*10) & 3;
-    GL_Bind(paliashdr->gl_texturenum[currententity->skinnum][anim]);
     
-    //TPX: HACK, as i'am not able to make the fullbrights support working,
-    //i use this hack to draw "skin1" instead of "skin0" if model is in the dark.
-    //"skin1" for models have to be full black textures with somes pixels in color
-    //wich will be rendered fullbright.
-    if (ambientlight < 16)
+    //TPX: Fullbrights mask work now, the only limitation for now is that we have to
+    //use the "SKIN1" in each aliasModel as the fullbright mask texture,
+    //Fully transparent texture(with color 255 in palette)
+    tx = paliashdr->gl_texturenum[currententity->skinnum][anim];
+    fb = paliashdr->fb_texturenum[currententity->skinnum+1][anim];
+
+    GL_Use (gl_intensitypolygon1textureprogram);
+    glUniformMatrix4fv(gl_intensitypolygon1textureprogram_transform, 1, 0, gl_polygon_matrix);
+    GL_Bind(tx);
+    R_SetupAliasFrame (currententity->frame, paliashdr);
+
+    if (fb)
     {
-        GL_Bind(paliashdr->fb_texturenum[currententity->skinnum+1][anim]);
-        ambientlight = shadelight = 16;
+        GL_Use (gl_alphapolygon1textureprogram);
+        glUniformMatrix4fv(gl_alphapolygon1textureprogram_transform, 1, 0, gl_polygon_matrix);
+        GL_Bind(fb);
+        R_SetupAliasFrame2 (currententity->frame, paliashdr);
     }
-    
+
 	// we can't dynamically colormap textures, so they are cached
 	// seperately for the players.  Heads are just uncolored.
+    
 	if (currententity->colormap != vid.colormap && !gl_nocolors.value)
 	{
         i = (int)(currententity - cl_entities);
 		if (i >= 1 && i<=cl.maxclients /* && !strcmp (currententity->model->name, "progs/player.mdl") */)
 		    GL_Bind(playertextures - 1 + i);
 	}
-
-	R_SetupAliasFrame (currententity->frame, paliashdr);
 
 	if (r_shadows.value)
 	{
