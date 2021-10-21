@@ -94,13 +94,10 @@
 		A13EC59720EA672F00CEB727 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13EC59620EA672F00CEB727 /* Enums.swift */; };
 		A13EC59A20EA67B200CEB727 /* GameOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13EC59920EA67B200CEB727 /* GameOptionsViewController.swift */; };
 		A13EC59D20EAE44800CEB727 /* SelectEpisodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13EC59C20EAE44800CEB727 /* SelectEpisodeViewController.swift */; };
-		A1834E0F20F70C07001A17BB /* dopa in Resources */ = {isa = PBXBuildFile; fileRef = A1834E0E20F70C07001A17BB /* dopa */; };
 		A1ABE1FB20E33E25008FCD88 /* JoyStickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1ABE1FA20E33E25008FCD88 /* JoyStickView.swift */; };
 		A1ABE1FD20E33EA2008FCD88 /* CoreGraphics+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1ABE1FC20E33EA2008FCD88 /* CoreGraphics+Additions.swift */; };
 		A1ABE1FF20E48923008FCD88 /* MainMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1ABE1FE20E48923008FCD88 /* MainMenuViewController.swift */; };
 		A1ABE20220E48A2A008FCD88 /* dpquake.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1ABE20120E48A2A008FCD88 /* dpquake.ttf */; };
-		A1ABE20620E4A072008FCD88 /* rogue in Resources */ = {isa = PBXBuildFile; fileRef = A1ABE20420E4A071008FCD88 /* rogue */; };
-		A1ABE20820E4A072008FCD88 /* hipnotic in Resources */ = {isa = PBXBuildFile; fileRef = A1ABE20520E4A071008FCD88 /* hipnotic */; };
 		A1ABE20B20E4A5D6008FCD88 /* ChooseGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1ABE20A20E4A5D6008FCD88 /* ChooseGameViewController.swift */; };
 		A1BADA3F20EE54A80080F57B /* bgmusic.c in Sources */ = {isa = PBXBuildFile; fileRef = A1BADA3E20EE54A80080F57B /* bgmusic.c */; };
 		A1BADA4320EE55300080F57B /* snd_codec.c in Sources */ = {isa = PBXBuildFile; fileRef = A1BADA4120EE552F0080F57B /* snd_codec.c */; };
@@ -133,6 +130,7 @@
 		A1E1816720B52B1100F3D5E7 /* snd_ios.c in Sources */ = {isa = PBXBuildFile; fileRef = A1E1816620B52B1100F3D5E7 /* snd_ios.c */; };
 		A1E1819120BA2D1900F3D5E7 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1E1819020BA2D1900F3D5E7 /* GLKit.framework */; };
 		A1E1819320BA2D3100F3D5E7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1E1819220BA2D3100F3D5E7 /* QuartzCore.framework */; };
+		FAE2D172272188D90036290C /* hipnotic in Resources */ = {isa = PBXBuildFile; fileRef = FAE2D171272188D90036290C /* hipnotic */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -301,13 +299,10 @@
 		A13EC59620EA672F00CEB727 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		A13EC59920EA67B200CEB727 /* GameOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOptionsViewController.swift; sourceTree = "<group>"; };
 		A13EC59C20EAE44800CEB727 /* SelectEpisodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectEpisodeViewController.swift; sourceTree = "<group>"; };
-		A1834E0E20F70C07001A17BB /* dopa */ = {isa = PBXFileReference; lastKnownFileType = folder; name = dopa; path = ../../../../../Applications/Quake/dopa; sourceTree = "<group>"; };
 		A1ABE1FA20E33E25008FCD88 /* JoyStickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoyStickView.swift; sourceTree = "<group>"; };
 		A1ABE1FC20E33EA2008FCD88 /* CoreGraphics+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreGraphics+Additions.swift"; sourceTree = "<group>"; };
 		A1ABE1FE20E48923008FCD88 /* MainMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuViewController.swift; sourceTree = "<group>"; };
 		A1ABE20120E48A2A008FCD88 /* dpquake.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = dpquake.ttf; sourceTree = "<group>"; };
-		A1ABE20420E4A071008FCD88 /* rogue */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rogue; path = ../../../../../Applications/Quake/rogue; sourceTree = "<group>"; };
-		A1ABE20520E4A071008FCD88 /* hipnotic */ = {isa = PBXFileReference; lastKnownFileType = folder; name = hipnotic; path = ../../../../../Applications/Quake/hipnotic; sourceTree = "<group>"; };
 		A1ABE20A20E4A5D6008FCD88 /* ChooseGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseGameViewController.swift; sourceTree = "<group>"; };
 		A1BADA3D20EE54A80080F57B /* bgmusic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bgmusic.h; sourceTree = "<group>"; };
 		A1BADA3E20EE54A80080F57B /* bgmusic.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = bgmusic.c; sourceTree = "<group>"; };
@@ -373,6 +368,7 @@
 		A1FC531D20D59B4C001DF6CA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS11.4.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
 		A1FC531F20D59B52001DF6CA /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS11.4.sdk/System/Library/Frameworks/OpenGLES.framework; sourceTree = DEVELOPER_DIR; };
 		A1FC532120D59B5F001DF6CA /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS11.4.sdk/System/Library/Frameworks/GLKit.framework; sourceTree = DEVELOPER_DIR; };
+		FAE2D171272188D90036290C /* hipnotic */ = {isa = PBXFileReference; lastKnownFileType = folder; path = hipnotic; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -392,10 +388,9 @@
 		2839AD351C5D6E4B00CEC48E = {
 			isa = PBXGroup;
 			children = (
+				FAE2D171272188D90036290C /* hipnotic */,
+				FAE2D1702721889C0036290C /* rogue */,
 				2AB4D75626BCCC5C00B06921 /* id1 */,
-				A1ABE20520E4A071008FCD88 /* hipnotic */,
-				A1ABE20420E4A071008FCD88 /* rogue */,
-				A1834E0E20F70C07001A17BB /* dopa */,
 				EFA69186850D4E8E75706323 /* Frameworks */,
 				2839AD411C5D6EF700CEC48E /* Products */,
 				2839AE031C5D6FFD00CEC48E /* Quake */,
@@ -680,6 +675,13 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		FAE2D1702721889C0036290C /* rogue */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = rogue;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -740,11 +742,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				28C4FA7D1CE79617001CF82D /* gl_polygon1textureprogram.vsh in Resources */,
-				A1834E0F20F70C07001A17BB /* dopa in Resources */,
 				28C4FA781CE79617001CF82D /* gl_coloredpolygonnotextureprogram.fsh in Resources */,
 				28C4FA821CE79617001CF82D /* gl_textprogram.fsh in Resources */,
 				28E641201D16F7B200FF3D8F /* gl_intensitypolygon1textureprogram.fsh in Resources */,
-				A1ABE20620E4A072008FCD88 /* rogue in Resources */,
+				FAE2D172272188D90036290C /* hipnotic in Resources */,
 				28C4FA7C1CE79617001CF82D /* gl_polygon1textureprogram.fsh in Resources */,
 				28C4FA7F1CE79617001CF82D /* gl_polygon2texturesprogram.vsh in Resources */,
 				A1ABE20220E48A2A008FCD88 /* dpquake.ttf in Resources */,
@@ -761,7 +762,6 @@
 				288781451CD83E0800AF4F24 /* Assets.xcassets in Resources */,
 				2AB4D75726BCCC5C00B06921 /* id1 in Resources */,
 				2891B10F1CFBFA720005377F /* Settings.bundle in Resources */,
-				A1ABE20820E4A072008FCD88 /* hipnotic in Resources */,
 				28C4FA841CE79617001CF82D /* gl_tintedpolygon1textureprogram.fsh in Resources */,
 				288781431CD83E0800AF4F24 /* Main.storyboard in Resources */,
 				28C4FA811CE79617001CF82D /* gl_polygonnotextureprogram.vsh in Resources */,
@@ -927,6 +927,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.7;
 				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
@@ -960,6 +961,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.7;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
@@ -1012,7 +1014,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Quake-iOS/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.7;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1022,7 +1024,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Quake-iOS/bridging.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1071,7 +1073,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Quake-iOS/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.7;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tpx.cag;
@@ -1079,7 +1081,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "Quake-iOS/bridging.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

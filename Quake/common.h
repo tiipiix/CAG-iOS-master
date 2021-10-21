@@ -184,6 +184,7 @@ extern    int    file_from_pak;    // global indicating that file came from a pa
 
 void COM_WriteFile (char *filename, void *data, int len);
 int COM_OpenFile (char *filename, int *hndl);
+int COM_OpenFile2 (const char *filename, int *hndl, unsigned int *path_id);
 int COM_FOpenFile (char *filename, FILE **file);
 qboolean COM_FileExists (const char *filename, unsigned int *path_id);
 void COM_CloseFile (int h);
@@ -191,6 +192,7 @@ void COM_CloseFile (int h);
 byte *COM_LoadStackFile (char *path, void *buffer, int bufsize);
 byte *COM_LoadTempFile (char *path);
 byte *COM_LoadHunkFile (char *path);
+byte *COM_LoadHunkFile2 (const char *path, unsigned int *path_id);
 void COM_LoadCacheFile (char *path, struct cache_user_s *cu);
 
 /* The following FS_*() stdio replacements are necessary if one is

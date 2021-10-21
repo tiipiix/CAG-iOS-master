@@ -161,6 +161,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define TE_BEAM				13
 // PGM 01/21/97 
 
+#define TE_PLASMA           14
+
 #ifdef QUAKE2
 #define TE_IMPLOSION		14
 #define TE_RAILTRAIL		15

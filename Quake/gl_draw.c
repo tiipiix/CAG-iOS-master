@@ -47,7 +47,7 @@ typedef struct
 byte		conback_buffer[sizeof(qpic_t) + sizeof(glpic_t)];
 qpic_t		*conback = (qpic_t *)&conback_buffer;
 
-int		gl_lightmap_format = GL_LUMINANCE;
+int		gl_lightmap_format = GL_RGBA;//GL_LUMINANCE;
 int		gl_solid_format = GL_RGBA;
 int		gl_alpha_format = GL_RGBA;
 

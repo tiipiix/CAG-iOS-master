@@ -37,6 +37,9 @@ m*_t structures are in-memory
 #define	EF_MUZZLEFLASH 			2
 #define	EF_BRIGHTLIGHT 			4
 #define	EF_DIMLIGHT 			8
+//tpx: new effects
+#define EF_PLASMA_BLUE     16
+#define EF_PLASMA_GREEN    32
 
 
 /*
@@ -318,7 +321,7 @@ typedef struct {
 	maliasframedesc_t	frames[1];	// variable sized
 } aliashdr_t;
 
-#define	MAXALIASVERTS	1024
+#define	MAXALIASVERTS	2048//1024
 #define	MAXALIASFRAMES	256
 #define	MAXALIASTRIS	2048
 extern	aliashdr_t	*pheader;
@@ -346,6 +349,7 @@ typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 typedef struct model_s
 {
 	char		name[MAX_QPATH];
+    unsigned int    path_id;    //TPX: lit support
 	qboolean	needload;		// bmodels and sprites don't cache normally
 
 	modtype_t	type;
@@ -353,6 +357,9 @@ typedef struct model_s
 	synctype_t	synctype;
 	
 	int			flags;
+    
+//TPX: translucent alias models
+    int         transmodel;
 
 //
 // volume occupied by the model graphics

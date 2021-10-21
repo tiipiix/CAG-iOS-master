@@ -335,6 +335,7 @@ dlight_t *CL_AllocDlight (int key)
 			{
 				memset (dl, 0, sizeof(*dl));
 				dl->key = key;
+                dl->color[0] = dl->color[1] = dl->color[2] = 1; //johnfitz -- lit support via lordhavoc
 				return dl;
 			}
 		}
@@ -348,6 +349,7 @@ dlight_t *CL_AllocDlight (int key)
 		{
 			memset (dl, 0, sizeof(*dl));
 			dl->key = key;
+            dl->color[0] = dl->color[1] = dl->color[2] = 1; //johnfitz -- lit support via lordhavoc
 			return dl;
 		}
 	}
@@ -355,6 +357,7 @@ dlight_t *CL_AllocDlight (int key)
 	dl = &cl_dlights[0];
 	memset (dl, 0, sizeof(*dl));
 	dl->key = key;
+    dl->color[0] = dl->color[1] = dl->color[2] = 1; //johnfitz -- lit support via lordhavoc
 	return dl;
 }
 
@@ -555,8 +558,45 @@ void CL_RelinkEntities (void)
 			VectorMA (dl->origin, 18, fv, dl->origin);
 			dl->radius = 200 + (rand()&31);
 			dl->minlight = 32;
-			dl->die = cl.time + 0.1;
+			dl->die = cl.time + 0.1f;
+            dl->color[0] = 1.0f;
+            dl->color[1] = 1.0f;
+            dl->color[2] = 0.8f;
 		}
+        if (ent->effects & EF_PLASMA_BLUE)
+        {
+            vec3_t        fv, rv, uv;
+            
+            dl = CL_AllocDlight (i);
+            VectorCopy (ent->origin,  dl->origin);
+            dl->origin[2] += 16;
+            AngleVectors (ent->angles, fv, rv, uv);
+            
+            VectorMA (dl->origin, 18, fv, dl->origin);
+            dl->radius = 200 + (rand()&31);
+            dl->minlight = 32;
+            dl->die = cl.time + 0.1f;
+            dl->color[0] = 0.0f;
+            dl->color[1] = 0.0f;
+            dl->color[2] = 1.0f;
+        }
+        if (ent->effects & EF_PLASMA_GREEN)
+        {
+            vec3_t        fv, rv, uv;
+            
+            dl = CL_AllocDlight (i);
+            VectorCopy (ent->origin,  dl->origin);
+            dl->origin[2] += 16;
+            AngleVectors (ent->angles, fv, rv, uv);
+            
+            VectorMA (dl->origin, 18, fv, dl->origin);
+            dl->radius = 200 + (rand()&31);
+            dl->minlight = 32;
+            dl->die = cl.time + 0.1f;
+            dl->color[0] = 0.0f;
+            dl->color[1] = 1.0f;
+            dl->color[2] = 0.0f;
+        }
 		if (ent->effects & EF_BRIGHTLIGHT)
 		{			
 			dl = CL_AllocDlight (i);

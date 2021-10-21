@@ -224,11 +224,11 @@ void R_DrawSpriteModel (entity_t *e)
 	// don't even bother culling, because it's just a single
 	// polygon without a surface cache
 	frame = R_GetSpriteFrame (e);
-	psprite = currententity->model->cache.data;
+	psprite = e->model->cache.data;
 
 	if (psprite->type == SPR_ORIENTED)
 	{	// bullet marks on walls
-		AngleVectors (currententity->angles, v_forward, v_right, v_up);
+		AngleVectors (e->angles, v_forward, v_right, v_up);
 		up = v_up;
 		right = v_right;
 	}
@@ -237,6 +237,10 @@ void R_DrawSpriteModel (entity_t *e)
 		up = vup;
 		right = vright;
 	}
+    
+    //TPX : Transparent alpha sprites
+    glEnable (GL_BLEND);
+    glBlendFunc (GL_ONE, GL_ONE);
 
     GL_Use (gl_alphapolygon1textureprogram);
     
@@ -299,6 +303,10 @@ void R_DrawSpriteModel (entity_t *e)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     
     glDeleteBuffers(1, &vertexbuffer);
+    
+    //TPX : Transparent alpha sprites
+    glDisable(GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 /*
@@ -318,6 +326,7 @@ float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
 
 vec3_t	shadevector;
 float	shadelight, ambientlight;
+extern vec3_t lightcolor; // LordHavoc: .lit support to the definitions at the top
 
 // precalculated dot products for quantized angles
 #define SHADEDOT_QUANT 16
@@ -555,12 +564,13 @@ lastposenum = posenum;
 
 /*
  =============
- GL_DrawAliasFrame2
+ GL_DrawAliasFrame_GlowMap
  
  TPX: used for fullbright mask
+ skin1(second skin) of the model is used as Glow map texture
  =============
  */
-void GL_DrawAliasFrame2 (aliashdr_t *paliashdr, int posenum)
+void GL_DrawAliasFrame_GlowMap (aliashdr_t *paliashdr, int posenum)
 {
     //    float    s, t;
     float     l;
@@ -774,6 +784,233 @@ void GL_DrawAliasFrame2 (aliashdr_t *paliashdr, int posenum)
 }
 
 /*
+ =============
+ GL_DrawAliasFrame_Additive
+ 
+ TPX: additive(translucent) models
+ =============
+ */
+void GL_DrawAliasFrame_Additive (aliashdr_t *paliashdr, int posenum)
+{
+    //    float    s, t;
+    float     l;
+    //    int        i, j;
+    //    int        index;
+    //    trivertx_t    *v, *verts;
+    trivertx_t    *verts;
+    //    int        list;
+    int        *order;
+    //    vec3_t    point;
+    //    float    *normal;
+    int        count;
+    
+    lastposenum = posenum;
+    
+    int mark = Hunk_LowMark ();
+    
+    int fansegmentcount = 0;
+    int stripsegmentcount = 0;
+    
+    order = (int *)((byte *)paliashdr + paliashdr->commands);
+    
+    while (1)
+    {
+        count = *order++;
+        if (!count)
+            break;        // done
+        if (count < 0)
+        {
+            fansegmentcount++;
+            order -= count;
+            order -= count;
+        }
+        else
+        {
+            stripsegmentcount++;
+            order += count;
+            order += count;
+        }
+    }
+    
+    GLsizei* fansegments = NULL;
+    GLsizei* stripsegments = NULL;
+    
+    if (fansegmentcount > 0)
+    {
+        fansegments = Hunk_AllocName (fansegmentcount * sizeof(GLsizei), "fan_segments");
+    }
+    
+    if (stripsegmentcount > 0)
+    {
+        stripsegments = Hunk_AllocName (stripsegmentcount * sizeof(GLsizei), "strip_segments");
+    }
+    
+    int fansegmentpos = 0;
+    int stripsegmentpos = 0;
+    
+    int fancount = 0;
+    int stripcount = 0;
+    
+    order = (int *)((byte *)paliashdr + paliashdr->commands);
+    
+    while (1)
+    {
+        count = *order++;
+        if (!count)
+            break;        // done
+        if (count < 0)
+        {
+            fansegments[fansegmentpos++] = -count;
+            fancount -= count;
+            order -= count;
+            order -= count;
+        }
+        else
+        {
+            stripsegments[stripsegmentpos++] = count;
+            stripcount += count;
+            order += count;
+            order += count;
+        }
+    }
+    
+    GLfloat* fanvertices = NULL;
+    GLfloat* stripvertices = NULL;
+    
+    if (fancount > 0)
+    {
+        fanvertices = Hunk_AllocName (fancount * 6 * sizeof(GLfloat), "fan_vertices");
+    }
+    
+    if (stripcount > 0)
+    {
+        stripvertices = Hunk_AllocName (stripcount * 6 * sizeof(GLfloat), "strip_vertices");
+    }
+    
+    int fanvertexpos = 0;
+    int stripvertexpos = 0;
+    
+    verts = (trivertx_t *)((byte *)paliashdr + paliashdr->posedata);
+    verts += posenum * paliashdr->poseverts;
+    order = (int *)((byte *)paliashdr + paliashdr->commands);
+    
+    while (1)
+    {
+        // get the vertex count and primitive type
+        count = *order++;
+        if (!count)
+            break;        // done
+        if (count < 0)
+        {
+            do
+            {
+                // normals and vertexes come from the frame list
+                fanvertices[fanvertexpos++] = verts->v[0];
+                fanvertices[fanvertexpos++] = verts->v[1];
+                fanvertices[fanvertexpos++] = verts->v[2];
+                
+                l = shadedots[verts->lightnormalindex] * shadelight;
+                fanvertices[fanvertexpos++] = l;
+                
+                // texture coordinates come from the draw list
+                fanvertices[fanvertexpos++] = ((float *)order)[0];
+                fanvertices[fanvertexpos++] = ((float *)order)[1];
+                
+                order += 2;
+                verts++;
+            } while (++count);
+        }
+        else
+        {
+            do
+            {
+                // normals and vertexes come from the frame list
+                stripvertices[stripvertexpos++] = verts->v[0];
+                stripvertices[stripvertexpos++] = verts->v[1];
+                stripvertices[stripvertexpos++] = verts->v[2];
+                
+                l = shadedots[verts->lightnormalindex] * shadelight;
+                stripvertices[stripvertexpos++] = l;
+                
+                // texture coordinates come from the draw list
+                stripvertices[stripvertexpos++] = ((float *)order)[0];
+                stripvertices[stripvertexpos++] = ((float *)order)[1];
+                
+                order += 2;
+                verts++;
+            } while (--count);
+        }
+    }
+    
+    glEnable (GL_BLEND);
+    glBlendFunc (GL_ONE, GL_ONE);
+    
+    if (fancount > 0)
+    {
+        GLuint vertexbuffer;
+        glGenBuffers(1, &vertexbuffer);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glBufferData(GL_ARRAY_BUFFER, fancount * 6 * sizeof(GLfloat), fanvertices, GL_STATIC_DRAW);
+        
+        glEnableVertexAttribArray(gl_alphapolygon1textureprogram_position);
+        glVertexAttribPointer(gl_alphapolygon1textureprogram_position, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid *)0);
+        glEnableVertexAttribArray(gl_alphapolygon1textureprogram_texcoords);
+        glVertexAttribPointer(gl_alphapolygon1textureprogram_texcoords, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid *)(4 * sizeof(GLfloat)));
+        
+        GLsizei offset = 0;
+        for (int i = 0; i < fansegmentcount; i++)
+        {
+            GLsizei count = fansegments[i];
+            glDrawArrays(GL_TRIANGLE_FAN, offset, count);
+            offset += count;
+        }
+        
+        glDisableVertexAttribArray(gl_alphapolygon1textureprogram_texcoords);
+        glDisableVertexAttribArray(gl_alphapolygon1textureprogram_position);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        
+        glDeleteBuffers(1, &vertexbuffer);
+    }
+    
+    if (stripcount > 0)
+    {
+        GLuint vertexbuffer;
+        glGenBuffers(1, &vertexbuffer);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glBufferData(GL_ARRAY_BUFFER, stripcount * 6 * sizeof(GLfloat), stripvertices, GL_STATIC_DRAW);
+        
+        glEnableVertexAttribArray(gl_alphapolygon1textureprogram_position);
+        glVertexAttribPointer(gl_alphapolygon1textureprogram_position, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid *)0);
+        glEnableVertexAttribArray(gl_alphapolygon1textureprogram_texcoords);
+        glVertexAttribPointer(gl_alphapolygon1textureprogram_texcoords, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid *)(4 * sizeof(GLfloat)));
+        
+        GLsizei offset = 0;
+        for (int i = 0; i < stripsegmentcount; i++)
+        {
+            GLsizei count = stripsegments[i];
+            glDrawArrays(GL_TRIANGLE_STRIP, offset, count);
+            offset += count;
+        }
+        
+        glDisableVertexAttribArray(gl_alphapolygon1textureprogram_texcoords);
+        glDisableVertexAttribArray(gl_alphapolygon1textureprogram_position);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        
+        glDeleteBuffers(1, &vertexbuffer);
+    }
+    
+    glDisable(GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    Hunk_FreeToLowMark (mark);
+}
+
+
+/*
 =============
 GL_DrawAliasShadow
 =============
@@ -868,6 +1105,8 @@ void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 	}
 }
 
+
+
 /*
 =================
 R_SetupAliasFrame
@@ -899,12 +1138,12 @@ void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr)
 
 /*
  =================
- R_SetupAliasFrame2
+ R_SetupAliasFrame_GlowMap
  
  TPX: used for fullbright mask
  =================
  */
-void R_SetupAliasFrame2 (int frame, aliashdr_t *paliashdr)
+void R_SetupAliasFrame_GlowMap (int frame, aliashdr_t *paliashdr)
 {
     int                pose, numposes;
     float            interval;
@@ -923,9 +1162,37 @@ void R_SetupAliasFrame2 (int frame, aliashdr_t *paliashdr)
         interval = paliashdr->frames[frame].interval;
         pose += (int)(cl.time / interval) % numposes;
     }
-    GL_DrawAliasFrame2 (paliashdr, pose);
+    GL_DrawAliasFrame_GlowMap (paliashdr, pose);
 }
 
+/*
+ =================
+ R_SetupAliasFrame_Additive
+ 
+ TPX: translucent models
+ =================
+ */
+void R_SetupAliasFrame_Additive (int frame, aliashdr_t *paliashdr)
+{
+    int                pose, numposes;
+    float            interval;
+    
+    if ((frame >= paliashdr->numframes) || (frame < 0))
+    {
+        Con_DPrintf ("R_AliasSetupFrame: no such frame %d\n", frame);
+        frame = 0;
+    }
+    
+    pose = paliashdr->frames[frame].firstpose;
+    numposes = paliashdr->frames[frame].numposes;
+    
+    if (numposes > 1)
+    {
+        interval = paliashdr->frames[frame].interval;
+        pose += (int)(cl.time / interval) % numposes;
+    }
+    GL_DrawAliasFrame_Additive (paliashdr, pose);
+}
 
 
 /*
@@ -1002,9 +1269,15 @@ void R_DrawAliasModel (entity_t *e)
 			ambientlight = shadelight = 8;
 
 	// HACK HACK HACK -- no fullbright colors, so make torches full light
-	if (!strcmp (clmodel->name, "progs/flame2.mdl")
-		|| !strcmp (clmodel->name, "progs/flame.mdl") )
+	if (!strcmp (clmodel->name, "progs/flame2.mdl")|| !strcmp (clmodel->name, "progs/flame.mdl") )
 		ambientlight = shadelight = 256;
+    
+    // TPX marine ligh fix
+    if (!strcmp (clmodel->name, "progs/marine.mdl"))
+    {
+        //if (ambientlight > 100)
+            ambientlight = shadelight = ambientlight*1.1;
+    }
 
 	shadedots = r_avertexnormal_dots[((int)(e->angles[1] * (SHADEDOT_QUANT / 360.0))) & (SHADEDOT_QUANT - 1)];
 	shadelight = shadelight / 200.0;
@@ -1025,55 +1298,66 @@ void R_DrawAliasModel (entity_t *e)
 	//
 	// draw all the triangles
 	//
+
+    GL_Use (gl_intensitypolygon1textureprogram);
     
     GL_DisableMultitexture();
 
 	R_RotateForEntity (e);
 
-	if (!strcmp (clmodel->name, "progs/eyes.mdl") && gl_doubleeyes.value)
-    {
-        GL_Translate (gl_polygon_matrix, paliashdr->scale_origin[0], paliashdr->scale_origin[1], paliashdr->scale_origin[2] - (22 + 8));
-// double size of eyes, since they are really hard to see in gl
-		GL_Scale (gl_polygon_matrix, paliashdr->scale[0]*2, paliashdr->scale[1]*2, paliashdr->scale[2]*2);
-	}
-    else
-    {
-		GL_Translate (gl_polygon_matrix, paliashdr->scale_origin[0], paliashdr->scale_origin[1], paliashdr->scale_origin[2]);
-		GL_Scale (gl_polygon_matrix, paliashdr->scale[0], paliashdr->scale[1], paliashdr->scale[2]);
-	}
+    GL_Translate (gl_polygon_matrix, paliashdr->scale_origin[0], paliashdr->scale_origin[1], paliashdr->scale_origin[2]);
+    GL_Scale (gl_polygon_matrix, paliashdr->scale[0], paliashdr->scale[1], paliashdr->scale[2]);
 
     R_ApplyProjection ();
 
+    glUniformMatrix4fv(gl_intensitypolygon1textureprogram_transform, 1, 0, gl_polygon_matrix);
+
     anim = (int)(cl.time*10) & 3;
+    //GL_Bind(paliashdr->gl_texturenum[currententity->skinnum][anim]);
     
     //TPX: Fullbrights mask work now, the only limitation for now is that we have to
     //use the "SKIN1" in each aliasModel as the fullbright mask texture,
     //Fully transparent texture(with color 255 in palette)
+    
     tx = paliashdr->gl_texturenum[currententity->skinnum][anim];
     fb = paliashdr->fb_texturenum[currententity->skinnum+1][anim];
-
-    GL_Use (gl_intensitypolygon1textureprogram);
-    glUniformMatrix4fv(gl_intensitypolygon1textureprogram_transform, 1, 0, gl_polygon_matrix);
-    GL_Bind(tx);
-    R_SetupAliasFrame (currententity->frame, paliashdr);
-
-    if (fb)
+    
+    //draw additive(translucent) texture
+    if (clmodel->transmodel > 0)
     {
         GL_Use (gl_alphapolygon1textureprogram);
         glUniformMatrix4fv(gl_alphapolygon1textureprogram_transform, 1, 0, gl_polygon_matrix);
-        GL_Bind(fb);
-        R_SetupAliasFrame2 (currententity->frame, paliashdr);
+        GL_Bind(tx);
+        R_SetupAliasFrame_Additive (currententity->frame, paliashdr);
+    }
+    else
+    {
+        // draw normal texture
+        GL_Use (gl_intensitypolygon1textureprogram);
+        glUniformMatrix4fv(gl_intensitypolygon1textureprogram_transform, 1, 0, gl_polygon_matrix);
+        GL_Bind(tx);
+        R_SetupAliasFrame (currententity->frame, paliashdr);
+        
+        // draw fullbright mask texture
+        if (fb)
+        {
+            GL_Use (gl_alphapolygon1textureprogram);
+            glUniformMatrix4fv(gl_alphapolygon1textureprogram_transform, 1, 0, gl_polygon_matrix);
+            GL_Bind(fb);
+            R_SetupAliasFrame_GlowMap (currententity->frame, paliashdr);
+        }
     }
 
 	// we can't dynamically colormap textures, so they are cached
 	// seperately for the players.  Heads are just uncolored.
-    
 	if (currententity->colormap != vid.colormap && !gl_nocolors.value)
 	{
         i = (int)(currententity - cl_entities);
-		if (i >= 1 && i<=cl.maxclients /* && !strcmp (currententity->model->name, "progs/player.mdl") */)
+		if (i >= 1 && i<=cl.maxclients)
 		    GL_Bind(playertextures - 1 + i);
 	}
+
+	//R_SetupAliasFrame (currententity->frame, paliashdr);
 
 	if (r_shadows.value)
 	{
@@ -1116,7 +1400,7 @@ void R_DrawEntitiesOnList (void)
 		switch (currententity->model->type)
 		{
 		case mod_alias:
-			R_DrawAliasModel (currententity);
+			//R_DrawAliasModel (currententity);
 			break;
 
 		case mod_brush:
@@ -1144,6 +1428,34 @@ void R_DrawEntitiesOnList (void)
         }
 	}
 
+    // restore the world matrix
+    R_ApplyWorld ();
+    R_ApplyProjection ();
+}
+
+/*
+ =============
+ R_DrawModel
+ =============
+ */
+void R_DrawModel (void)
+{
+    int        i;
+    
+    if (!r_drawentities.value)
+        return;
+    
+    for (i=0 ; i<cl_numvisedicts ; i++)
+    {
+        currententity = cl_visedicts[i];
+        
+        switch (currententity->model->type)
+        {
+            case mod_alias:
+                R_DrawAliasModel (currententity);
+            break;
+        }
+    }
     // restore the world matrix
     R_ApplyWorld ();
     R_ApplyProjection ();
@@ -1525,6 +1837,8 @@ void R_RenderScene (void)
 	R_DrawWorld ();		// adds static entities to the list
 
 	S_ExtraUpdate ();	// don't let sound get messed up if going slow
+    
+    R_DrawModel ();//tpx : sprites orientation fix
 
 	R_DrawEntitiesOnList ();
 

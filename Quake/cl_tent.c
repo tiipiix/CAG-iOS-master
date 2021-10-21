@@ -259,6 +259,24 @@ void CL_ParseTEnt (void)
 		dl->decay = 300;
 		S_StartSound (-1, 0, cl_sfx_r_exp3, pos, 1, 1);
 		break;
+            
+    case TE_PLASMA:                // color mapped light
+        pos[0] = MSG_ReadCoord ();
+        pos[1] = MSG_ReadCoord ();
+        pos[2] = MSG_ReadCoord ();
+        //colorStart = //MSG_ReadByte ();
+        //colorLength = //MSG_ReadByte ();
+        //R_ParticleExplosion2 (pos, colorStart, colorLength);
+        dl = CL_AllocDlight (0);
+        VectorCopy (pos, dl->origin);
+        dl->radius = 200;
+        dl->die = cl.time + 1.5;
+        dl->decay = 300;
+        dl->color[0] = 0.0f;
+        dl->color[1] = 0.0f;
+        dl->color[2] = 1.0f;
+        //S_StartSound (-1, 0, cl_sfx_r_exp3, pos, 1, 1);
+        break;
 		
 #ifdef QUAKE2
 	case TE_IMPLOSION:
