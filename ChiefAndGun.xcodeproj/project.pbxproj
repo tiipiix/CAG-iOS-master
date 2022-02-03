@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -130,7 +130,8 @@
 		A1E1816720B52B1100F3D5E7 /* snd_ios.c in Sources */ = {isa = PBXBuildFile; fileRef = A1E1816620B52B1100F3D5E7 /* snd_ios.c */; };
 		A1E1819120BA2D1900F3D5E7 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1E1819020BA2D1900F3D5E7 /* GLKit.framework */; };
 		A1E1819320BA2D3100F3D5E7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1E1819220BA2D3100F3D5E7 /* QuartzCore.framework */; };
-		FAE2D172272188D90036290C /* hipnotic in Resources */ = {isa = PBXBuildFile; fileRef = FAE2D171272188D90036290C /* hipnotic */; };
+		FA6263BA274EA9DE0020ADC4 /* Animation_ios.gif in Resources */ = {isa = PBXBuildFile; fileRef = FA6263B9274EA9DE0020ADC4 /* Animation_ios.gif */; };
+		FAF488EA2748AE3B00798A28 /* Gifu in Frameworks */ = {isa = PBXBuildFile; productRef = FAF488E92748AE3B00798A28 /* Gifu */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -368,7 +369,8 @@
 		A1FC531D20D59B4C001DF6CA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS11.4.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
 		A1FC531F20D59B52001DF6CA /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS11.4.sdk/System/Library/Frameworks/OpenGLES.framework; sourceTree = DEVELOPER_DIR; };
 		A1FC532120D59B5F001DF6CA /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS11.4.sdk/System/Library/Frameworks/GLKit.framework; sourceTree = DEVELOPER_DIR; };
-		FAE2D171272188D90036290C /* hipnotic */ = {isa = PBXFileReference; lastKnownFileType = folder; path = hipnotic; sourceTree = "<group>"; };
+		FA6263B9274EA9DE0020ADC4 /* Animation_ios.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Animation_ios.gif; sourceTree = "<group>"; };
+		FAF488E82748A8D400798A28 /* Gifu-master */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Gifu-master"; path = "../../../Gifu-master"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -379,6 +381,7 @@
 				A1E1819320BA2D3100F3D5E7 /* QuartzCore.framework in Frameworks */,
 				A1E1819120BA2D1900F3D5E7 /* GLKit.framework in Frameworks */,
 				A1E1816520B52A1B00F3D5E7 /* OpenGLES.framework in Frameworks */,
+				FAF488EA2748AE3B00798A28 /* Gifu in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,8 +391,7 @@
 		2839AD351C5D6E4B00CEC48E = {
 			isa = PBXGroup;
 			children = (
-				FAE2D171272188D90036290C /* hipnotic */,
-				FAE2D1702721889C0036290C /* rogue */,
+				FAF488E72748A8D400798A28 /* Packages */,
 				2AB4D75626BCCC5C00B06921 /* id1 */,
 				EFA69186850D4E8E75706323 /* Frameworks */,
 				2839AD411C5D6EF700CEC48E /* Products */,
@@ -563,6 +565,7 @@
 		2887813C1CD83E0800AF4F24 /* Quake-iOS */ = {
 			isa = PBXGroup;
 			children = (
+				FA6263B9274EA9DE0020ADC4 /* Animation_ios.gif */,
 				2887813D1CD83E0800AF4F24 /* AppDelegate.swift */,
 				288781441CD83E0800AF4F24 /* Assets.xcassets */,
 				288781531CD8406100AF4F24 /* bridging.h */,
@@ -675,11 +678,12 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		FAE2D1702721889C0036290C /* rogue */ = {
+		FAF488E72748A8D400798A28 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				FAF488E82748A8D400798A28 /* Gifu-master */,
 			);
-			path = rogue;
+			name = Packages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -698,6 +702,9 @@
 			dependencies = (
 			);
 			name = "ChiefAndGun-iOS";
+			packageProductDependencies = (
+				FAF488E92748AE3B00798A28 /* Gifu */,
+			);
 			productName = Quake_iOS_VR;
 			productReference = 2887813B1CD83E0800AF4F24 /* ChiefAndGun-iOS.app */;
 			productType = "com.apple.product-type.application";
@@ -709,7 +716,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0940;
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1310;
 				TargetAttributes = {
 					2887813A1CD83E0800AF4F24 = {
 						CreatedOnToolsVersion = 7.3;
@@ -744,8 +751,8 @@
 				28C4FA7D1CE79617001CF82D /* gl_polygon1textureprogram.vsh in Resources */,
 				28C4FA781CE79617001CF82D /* gl_coloredpolygonnotextureprogram.fsh in Resources */,
 				28C4FA821CE79617001CF82D /* gl_textprogram.fsh in Resources */,
+				FA6263BA274EA9DE0020ADC4 /* Animation_ios.gif in Resources */,
 				28E641201D16F7B200FF3D8F /* gl_intensitypolygon1textureprogram.fsh in Resources */,
-				FAE2D172272188D90036290C /* hipnotic in Resources */,
 				28C4FA7C1CE79617001CF82D /* gl_polygon1textureprogram.fsh in Resources */,
 				28C4FA7F1CE79617001CF82D /* gl_polygon2texturesprogram.vsh in Resources */,
 				A1ABE20220E48A2A008FCD88 /* dpquake.ttf in Resources */,
@@ -913,6 +920,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -927,7 +935,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.7;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
@@ -948,6 +956,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -961,8 +970,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.7;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Release;
 		};
@@ -1014,8 +1024,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Quake-iOS/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.7;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tpx.cag;
@@ -1073,8 +1086,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Quake-iOS/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.7;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tpx.cag;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1108,6 +1124,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FAF488E92748AE3B00798A28 /* Gifu */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Gifu;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2839AD361C5D6E4B00CEC48E /* Project object */;
 }

@@ -15,6 +15,7 @@ int			sb_lines;		// scan lines to draw
 //
 
 int     ch_color; //Crosshair color (0=Blue 1=Red 2=Green)
+extern  int HUD_IsDeathmatch;
 
 /*
  ===============
@@ -108,6 +109,7 @@ void HUD_Crosshairs(void)
     
     x = vid.width/2 -16;
     y = vid.height/2 -16;
+    pic = Draw_CachePic("");
     
     switch (cl.stats[STAT_ACTIVEWEAPON])
     {
@@ -198,4 +200,39 @@ void HUD_Weapons(void)
             break;
     }
     Draw_Pic(x, y, pic2);
+}
+
+/*
+ ===================================
+ HUD_Deathmatch
+ ==================================
+ */
+void HUD_Deathmatch(void)
+{
+    qpic_t* pic3;
+    float x, y;
+    int bscore;
+    int rscore;
+    #define MAX_DIGITS 3
+    
+    if (Cvar_VariableValue ("deathmatch"))
+    {
+        //draw deathmatch score backgroud
+        pic3 = Draw_CachePic("gfx/deathmatch.lmp");
+        x = (vid.width/2) - (pic3->width/2);
+        y = 0;
+        Draw_AlphaPic(x, y, pic3, 0.5);
+        
+        //draw blue score
+        bscore = Cvar_VariableValue("bluescore");
+        char bscore_char[MAX_DIGITS + sizeof(char)];
+        sprintf(bscore_char, "%d", bscore);
+        Draw_String(x+10, y+5, bscore_char);
+        
+        //draw red score
+        rscore = Cvar_VariableValue("redscore");
+        char rscore_char[MAX_DIGITS + sizeof(char)];
+        sprintf(rscore_char, "%d", rscore);
+        Draw_String(x+50, y+5, rscore_char);
+    }
 }

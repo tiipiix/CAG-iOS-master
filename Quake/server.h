@@ -202,6 +202,9 @@ extern	cvar_t	coop;
 extern	cvar_t	fraglimit;
 extern	cvar_t	timelimit;
 
+extern    cvar_t    bluescore;
+extern    cvar_t    redscore;
+
 extern	server_static_t	svs;				// persistant server info
 extern	server_t		sv;					// local server
 

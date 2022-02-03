@@ -109,6 +109,9 @@ GLchar* gl_intensitypolygon1textureprogram_fragment;
 GLint gl_intensitypolygon1textureprogram_position;
 GLint gl_intensitypolygon1textureprogram_intensity;
 GLint gl_intensitypolygon1textureprogram_texcoords;
+GLint gl_intensitypolygon1textureprogram_normal;
+//GLint gl_intensitypolygon1textureprogram_viewpos;
+//GLint gl_intensitypolygon1textureprogram_lightpos;
 GLint gl_intensitypolygon1textureprogram_transform;
 GLint gl_intensitypolygon1textureprogram_texture;
 
@@ -376,6 +379,12 @@ void GL_Init (void)
     gl_intensitypolygon1textureprogram_position = glGetAttribLocation(gl_intensitypolygon1textureprogram, "position");
     gl_intensitypolygon1textureprogram_intensity = glGetAttribLocation(gl_intensitypolygon1textureprogram, "intensity");
     gl_intensitypolygon1textureprogram_texcoords = glGetAttribLocation(gl_intensitypolygon1textureprogram, "texcoords");
+    gl_intensitypolygon1textureprogram_normal = glGetAttribLocation(gl_intensitypolygon1textureprogram, "normal");
+    
+    //TPX
+    //gl_intensitypolygon1textureprogram_texcoords = glGetAttribLocation(gl_intensitypolygon1textureprogram, "viewpos");
+    //gl_intensitypolygon1textureprogram_texcoords = glGetAttribLocation(gl_intensitypolygon1textureprogram, "lightpos");
+    
     
     gl_intensitypolygon1textureprogram_transform = glGetUniformLocation(gl_intensitypolygon1textureprogram, "transform");
     gl_intensitypolygon1textureprogram_texture = glGetUniformLocation(gl_intensitypolygon1textureprogram, "texture");

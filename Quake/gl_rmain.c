@@ -343,6 +343,8 @@ int	lastposenum;
 GL_DrawAliasFrame
 =============
 */
+extern vec3_t lightcolor;//LordHavoc: .lit support
+extern vec3_t lightorigin;//TPX specular support
 void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 {
 //    float    s, t;
@@ -353,9 +355,19 @@ void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
     trivertx_t    *verts;
 //    int        list;
 	int		*order;
-//    vec3_t    point;
+    vec3_t    point;//TPX
+    float    height, lheight;//TPX
 //    float    *normal;
 	int		count;
+    
+    vec3_t  color;
+    float   r;
+    float   g;
+    float   b;
+    
+    vec3_t viewentityPos;
+    vec3_t lightPos;
+    
 
 lastposenum = posenum;
 
@@ -430,14 +442,26 @@ lastposenum = posenum;
     GLfloat* fanvertices = NULL;
     GLfloat* stripvertices = NULL;
     
+    /*
+     if (fancount > 0)
+    {
+        fanvertices = Hunk_AllocName (fancount * 9 * sizeof(GLfloat), "fan_vertices");
+    }
+    */
     if (fancount > 0)
     {
-        fanvertices = Hunk_AllocName (fancount * 6 * sizeof(GLfloat), "fan_vertices");
+        fanvertices = Hunk_AllocName (fancount * 9 * sizeof(GLfloat), "fan_vertices");
     }
     
+    /*
     if (stripcount > 0)
     {
-        stripvertices = Hunk_AllocName (stripcount * 6 * sizeof(GLfloat), "strip_vertices");
+        stripvertices = Hunk_AllocName (stripcount * 9 * sizeof(GLfloat), "strip_vertices");
+    }
+    */
+    if (stripcount > 0)
+    {
+        stripvertices = Hunk_AllocName (stripcount * 9 * sizeof(GLfloat), "strip_vertices");
     }
     
     int fanvertexpos = 0;
@@ -446,6 +470,18 @@ lastposenum = posenum;
     verts = (trivertx_t *)((byte *)paliashdr + paliashdr->posedata);
     verts += posenum * paliashdr->poseverts;
     order = (int *)((byte *)paliashdr + paliashdr->commands);
+    
+//tpx: specular test
+/*
+    lightPos[0] = lightorigin[0];
+    lightPos[1] = lightorigin[1];
+    lightPos[2] = lightorigin[2];
+    
+    viewentityPos[0] = cl.viewent.origin[0];
+    viewentityPos[1] = cl.viewent.origin[1];
+    viewentityPos[2] = cl.viewent.origin[2];
+ */
+//tpx: specular test end
     
 	while (1)
 	{
@@ -462,12 +498,34 @@ lastposenum = posenum;
                 fanvertices[fanvertexpos++] = verts->v[1];
                 fanvertices[fanvertexpos++] = verts->v[2];
                 
-                l = shadedots[verts->lightnormalindex] * shadelight;
-                fanvertices[fanvertexpos++] = l;
+                l = shadedots[verts->lightnormalindex];// * shadelight;
+                fanvertices[fanvertexpos++] = l * lightcolor[0]/255;
+                fanvertices[fanvertexpos++] = l * lightcolor[1]/255;
+                fanvertices[fanvertexpos++] = l * lightcolor[2]/255;
+                fanvertices[fanvertexpos++] = 1.0;
                 
                 // texture coordinates come from the draw list
                 fanvertices[fanvertexpos++] = ((float *)order)[0];
                 fanvertices[fanvertexpos++] = ((float *)order)[1];
+                
+                //normals
+                //point[0] -= shadevector[0]*(point[2]+lheight);
+                //point[1] -= shadevector[1]*(point[2]+lheight);
+                //point[2] = height;
+                //height -= 0.001;
+                //fanvertices[fanvertexpos++] = point[0];
+                //fanvertices[fanvertexpos++] = point[1];
+                //fanvertices[fanvertexpos++] = point[2];
+                
+                /*
+                fanvertices[fanvertexpos++] = viewentityPos[0];
+                fanvertices[fanvertexpos++] = viewentityPos[0];
+                fanvertices[fanvertexpos++] = viewentityPos[0];
+                
+                fanvertices[fanvertexpos++] = lightPos[0];
+                fanvertices[fanvertexpos++] = lightPos[1];
+                fanvertices[fanvertexpos++] = lightPos[2];
+                 */
                 
                 order += 2;
                 verts++;
@@ -482,12 +540,36 @@ lastposenum = posenum;
                 stripvertices[stripvertexpos++] = verts->v[1];
                 stripvertices[stripvertexpos++] = verts->v[2];
                 
-                l = shadedots[verts->lightnormalindex] * shadelight;
-                stripvertices[stripvertexpos++] = l;
+                l = shadedots[verts->lightnormalindex];// * shadelight;
+                stripvertices[stripvertexpos++] = l * lightcolor[0]/255;
+                stripvertices[stripvertexpos++] = l * lightcolor[1]/255;
+                stripvertices[stripvertexpos++] = l * lightcolor[2]/255;
+                stripvertices[stripvertexpos++] = 1.0;
                 
                 // texture coordinates come from the draw list
                 stripvertices[stripvertexpos++] = ((float *)order)[0];
                 stripvertices[stripvertexpos++] = ((float *)order)[1];
+                
+                //normals
+                //point[0] -= shadevector[0]*(point[2]+lheight);
+                //point[1] -= shadevector[1]*(point[2]+lheight);
+                //point[2] = height;
+                //height -= 0.001;
+                //stripvertices[stripvertexpos++] = point[0];
+                //stripvertices[stripvertexpos++] = point[1];
+                //stripvertices[stripvertexpos++] = point[2];
+                
+                
+                /*
+                stripvertices[stripvertexpos++] = viewentityPos[0];
+                stripvertices[stripvertexpos++] = viewentityPos[0];
+                stripvertices[stripvertexpos++] = viewentityPos[0];
+                
+                stripvertices[stripvertexpos++] = lightPos[0];
+                stripvertices[stripvertexpos++] = lightPos[1];
+                stripvertices[stripvertexpos++] = lightPos[2];
+                 */
+            
                 
                 order += 2;
                 verts++;
@@ -501,14 +583,24 @@ lastposenum = posenum;
         glGenBuffers(1, &vertexbuffer);
         
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glBufferData(GL_ARRAY_BUFFER, fancount * 6 * sizeof(GLfloat), fanvertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, fancount * 9 * sizeof(GLfloat), fanvertices, GL_STATIC_DRAW);
         
+        //was 9
         glEnableVertexAttribArray(gl_intensitypolygon1textureprogram_position);
-        glVertexAttribPointer(gl_intensitypolygon1textureprogram_position, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid *)0);
+        glVertexAttribPointer(gl_intensitypolygon1textureprogram_position, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (const GLvoid *)0);
         glEnableVertexAttribArray(gl_intensitypolygon1textureprogram_intensity);
-        glVertexAttribPointer(gl_intensitypolygon1textureprogram_intensity, 1, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid *)(3 * sizeof(GLfloat)));
+        glVertexAttribPointer(gl_intensitypolygon1textureprogram_intensity, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (const GLvoid *)(3 * sizeof(GLfloat)));
         glEnableVertexAttribArray(gl_intensitypolygon1textureprogram_texcoords);
-        glVertexAttribPointer(gl_intensitypolygon1textureprogram_texcoords, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid *)(4 * sizeof(GLfloat)));
+        glVertexAttribPointer(gl_intensitypolygon1textureprogram_texcoords, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (const GLvoid *)(7 * sizeof(GLfloat)));
+        //glEnableVertexAttribArray(gl_intensitypolygon1textureprogram_normal);
+        //glVertexAttribPointer(gl_intensitypolygon1textureprogram_normal, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (const GLvoid *)9);
+        
+        /*
+        glEnableVertexAttribArray(gl_intensitypolygon1textureprogram_viewpos);
+        glVertexAttribPointer(gl_intensitypolygon1textureprogram_viewpos, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *)(10 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(gl_intensitypolygon1textureprogram_lightpos);
+        glVertexAttribPointer(gl_intensitypolygon1textureprogram_lightpos, 3, GL_FLOAT, GL_FALSE, 15 * sizeof(GLfloat), (const GLvoid *)(13 * sizeof(GLfloat)));
+         */
         
         GLsizei offset = 0;
         for (int i = 0; i < fansegmentcount; i++)
@@ -518,6 +610,9 @@ lastposenum = posenum;
             offset += count;
         }
         
+        //glDisableVertexAttribArray(gl_intensitypolygon1textureprogram_lightpos);
+        //glDisableVertexAttribArray(gl_intensitypolygon1textureprogram_viewpos);
+        //glDisableVertexAttribArray(gl_intensitypolygon1textureprogram_normal);
         glDisableVertexAttribArray(gl_intensitypolygon1textureprogram_texcoords);
         glDisableVertexAttribArray(gl_intensitypolygon1textureprogram_intensity);
         glDisableVertexAttribArray(gl_intensitypolygon1textureprogram_position);
@@ -533,14 +628,23 @@ lastposenum = posenum;
         glGenBuffers(1, &vertexbuffer);
         
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glBufferData(GL_ARRAY_BUFFER, stripcount * 6 * sizeof(GLfloat), stripvertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, stripcount * 9 * sizeof(GLfloat), stripvertices, GL_STATIC_DRAW);
         
+        //15 was 9
         glEnableVertexAttribArray(gl_intensitypolygon1textureprogram_position);
-        glVertexAttribPointer(gl_intensitypolygon1textureprogram_position, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid *)0);
+        glVertexAttribPointer(gl_intensitypolygon1textureprogram_position, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (const GLvoid *)0);
         glEnableVertexAttribArray(gl_intensitypolygon1textureprogram_intensity);
-        glVertexAttribPointer(gl_intensitypolygon1textureprogram_intensity, 1, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid *)(3 * sizeof(GLfloat)));
+        glVertexAttribPointer(gl_intensitypolygon1textureprogram_intensity, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (const GLvoid *)(3 * sizeof(GLfloat)));
         glEnableVertexAttribArray(gl_intensitypolygon1textureprogram_texcoords);
-        glVertexAttribPointer(gl_intensitypolygon1textureprogram_texcoords, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid *)(4 * sizeof(GLfloat)));
+        glVertexAttribPointer(gl_intensitypolygon1textureprogram_texcoords, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (const GLvoid *)(7 * sizeof(GLfloat)));
+        //glEnableVertexAttribArray(gl_intensitypolygon1textureprogram_normal);
+        //glVertexAttribPointer(gl_intensitypolygon1textureprogram_normal, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (const GLvoid *)9);
+        /*
+        glEnableVertexAttribArray(gl_intensitypolygon1textureprogram_viewpos);
+        glVertexAttribPointer(gl_intensitypolygon1textureprogram_viewpos, 3, GL_FLOAT, GL_FALSE, 15 * sizeof(GLfloat), (const GLvoid *)(10 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(gl_intensitypolygon1textureprogram_lightpos);
+        glVertexAttribPointer(gl_intensitypolygon1textureprogram_lightpos, 3, GL_FLOAT, GL_FALSE, 15 * sizeof(GLfloat), (const GLvoid *)(13 * sizeof(GLfloat)));
+         */
         
         GLsizei offset = 0;
         for (int i = 0; i < stripsegmentcount; i++)
@@ -550,6 +654,9 @@ lastposenum = posenum;
             offset += count;
         }
         
+        //glDisableVertexAttribArray(gl_intensitypolygon1textureprogram_lightpos);
+        //glDisableVertexAttribArray(gl_intensitypolygon1textureprogram_viewpos);
+        //glDisableVertexAttribArray(gl_intensitypolygon1textureprogram_normal);
         glDisableVertexAttribArray(gl_intensitypolygon1textureprogram_texcoords);
         glDisableVertexAttribArray(gl_intensitypolygon1textureprogram_intensity);
         glDisableVertexAttribArray(gl_intensitypolygon1textureprogram_position);
@@ -1233,7 +1340,8 @@ void R_DrawAliasModel (entity_t *e)
 	// get lighting information
 	//
 
-	ambientlight = shadelight = R_LightPoint (currententity->origin);
+	ambientlight = shadelight = R_LightPoint (currententity->origin);//LordHavoc original code
+    //R_LightPoint (currententity->origin);
 
 	// allways give the gun some light
 	if (e == &cl.viewent && ambientlight < 24)
@@ -1248,10 +1356,21 @@ void R_DrawAliasModel (entity_t *e)
 							dist);
 			add = cl_dlights[lnum].radius - Length(dist);
 
-			if (add > 0) {
+			if (add > 0)
+            {
 				ambientlight += add;
 				//ZOID models should be affected by dlights as well
 				shadelight += add;
+                
+                //LordHavoc .lit support
+                lightcolor[0] += add * cl_dlights[lnum].color[0];
+                lightcolor[1] += add * cl_dlights[lnum].color[1];
+                lightcolor[2] += add * cl_dlights[lnum].color[2];
+                //LordHavoc .lit support end
+                
+                lightorigin[0] = cl_dlights[lnum].origin[0];
+                lightorigin[1] = cl_dlights[lnum].origin[1];
+                lightorigin[2] = cl_dlights[lnum].origin[2];
 			}
 		}
 	}
@@ -1281,6 +1400,9 @@ void R_DrawAliasModel (entity_t *e)
 
 	shadedots = r_avertexnormal_dots[((int)(e->angles[1] * (SHADEDOT_QUANT / 360.0))) & (SHADEDOT_QUANT - 1)];
 	shadelight = shadelight / 200.0;
+    //LordHavoc .lit support
+    //VectorScale(lightcolor, 1.0f / 200.0f, lightcolor);
+    //LordHavoc .lit support end
 	
 	an = e->angles[1]/180*M_PI;
 	shadevector[0] = cos(-an);

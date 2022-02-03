@@ -1499,7 +1499,8 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 
 	for (i=0 ; i<numskins ; i++)
 	{
-		if (pskintype->type == ALIAS_SKIN_SINGLE) {
+		if (pskintype->type == ALIAS_SKIN_SINGLE)
+        {
 			//Mod_FloodFillSkin( skin, pheader->skinwidth, pheader->skinheight );
 
 			// save 8 bit texels for the player model to remap
@@ -1524,7 +1525,9 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
                             pheader->skinheight, (byte *)(pskintype + 1), true, false);
             
 			pskintype = (daliasskintype_t *)((byte *)(pskintype+1) + s);
-		} else {
+		}
+        else
+        {
 			// animating skin group.  yuck.
 			pskintype++;
 			pinskingroup = (daliasskingroup_t *)pskintype;

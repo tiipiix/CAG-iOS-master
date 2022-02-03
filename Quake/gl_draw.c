@@ -1277,7 +1277,7 @@ void Draw_ConsoleBackground (int lines)
 	if (lines > y)
 		Draw_Pic(0, lines - vid.height, conback);
 	else
-		Draw_AlphaPic (0, lines - vid.height, conback, (float)(1.2 * lines)/y);
+		Draw_AlphaPic (0, lines - vid.height, conback, 0.5);
         //Draw_AlphaPic (0, lines - vid.height, conback, (float)(1.2 * lines)/y);
 }
 

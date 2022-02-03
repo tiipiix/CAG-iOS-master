@@ -936,11 +936,12 @@ void SCR_UpdateScreen (void)
 		
         HUD_DrawHealth ();
         HUD_Weapons ();
+        HUD_Deathmatch();
         
-		SCR_DrawRam ();
-		SCR_DrawNet ();
-		SCR_DrawTurtle ();
-		SCR_DrawPause ();
+		//SCR_DrawRam ();
+		//SCR_DrawNet ();
+		//SCR_DrawTurtle ();
+		//SCR_DrawPause ();
 		SCR_CheckDrawCenterString ();
 		//Sbar_Draw ();
 		SCR_DrawConsole ();	

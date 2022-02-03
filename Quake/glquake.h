@@ -333,6 +333,9 @@ extern GLchar* gl_intensitypolygon1textureprogram_fragment;
 extern GLint gl_intensitypolygon1textureprogram_position;
 extern GLint gl_intensitypolygon1textureprogram_intensity;
 extern GLint gl_intensitypolygon1textureprogram_texcoords;
+extern GLint gl_intensitypolygon1textureprogram_normal;
+//extern GLint gl_intensitypolygon1textureprogram_viewpos;
+//extern GLint gl_intensitypolygon1textureprogram_lightpos;
 extern GLint gl_intensitypolygon1textureprogram_transform;
 extern GLint gl_intensitypolygon1textureprogram_texture;
 

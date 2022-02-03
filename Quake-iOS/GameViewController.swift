@@ -243,7 +243,7 @@ class GameViewController: GLKViewController, GLKViewControllerDelegate
         
         if commandLine == nil
         {
-            commandLine = ""
+            commandLine = "map start"
         }
         
         commandLine! += additionalCommandLine

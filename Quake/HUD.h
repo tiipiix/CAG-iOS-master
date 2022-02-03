@@ -14,3 +14,4 @@ extern      int     ch_color; //Crosshair color (0=Blue 1=Red 2=Green)
 void HUD_DrawHealth (void);
 void HUD_Crosshairs (void);
 void HUD_Weapons(void);
+void HUD_Deathmatch(void);

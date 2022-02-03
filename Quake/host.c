@@ -86,6 +86,9 @@ cvar_t	pausable = {"pausable","1"};
 cvar_t	temp1 = {"temp1","0"};
 
 
+cvar_t    bluescore = {"bluescore","0"};
+cvar_t    redscore = {"redscore","0"};
+
 /*
 ================
 Host_EndGame
@@ -198,10 +201,12 @@ void	Host_FindMaxClients (void)
 		svs.maxclientslimit = 4;
 	svs.clients = Hunk_AllocName (svs.maxclientslimit*sizeof(client_t), "clients");
 
+    /*
 	if (svs.maxclients > 1)
 		Cvar_SetValue ("deathmatch", 1.0);
 	else
 		Cvar_SetValue ("deathmatch", 0.0);
+     */
 }
 
 
@@ -229,6 +234,12 @@ void Host_InitLocal (void)
 	Cvar_RegisterVariable (&developer);
 	Cvar_RegisterVariable (&deathmatch);
 	Cvar_RegisterVariable (&coop);
+    
+    //CAG deathmatch
+    Cvar_RegisterVariable (&bluescore);
+    Cvar_RegisterVariable (&redscore);
+    
+    Cvar_RegisterVariable (&host_framerate);
 
 	Cvar_RegisterVariable (&pausable);
 

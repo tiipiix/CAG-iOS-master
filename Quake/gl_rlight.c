@@ -336,6 +336,7 @@ LIGHT SAMPLING
 mplane_t		*lightplane;
 vec3_t			lightspot;
 vec3_t          lightcolor; //johnfitz -- lit support via lordhavoc
+vec3_t          lightorigin;//TPX specular support
 
 /*
 int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)

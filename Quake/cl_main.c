@@ -565,6 +565,14 @@ void CL_RelinkEntities (void)
 		}
         if (ent->effects & EF_PLASMA_BLUE)
         {
+            dl = CL_AllocDlight (i);
+            VectorCopy (ent->origin, dl->origin);
+            dl->radius = 200;
+            dl->die = cl.time + 0.01;
+            dl->color[0] = 0.0f;
+            dl->color[1] = 0.0f;
+            dl->color[2] = 1.0f;
+            /*
             vec3_t        fv, rv, uv;
             
             dl = CL_AllocDlight (i);
@@ -579,9 +587,18 @@ void CL_RelinkEntities (void)
             dl->color[0] = 0.0f;
             dl->color[1] = 0.0f;
             dl->color[2] = 1.0f;
+             */
         }
         if (ent->effects & EF_PLASMA_GREEN)
         {
+            dl = CL_AllocDlight (i);
+            VectorCopy (ent->origin, dl->origin);
+            dl->radius = 200;
+            dl->die = cl.time + 0.01;
+            dl->color[0] = 0.0f;
+            dl->color[1] = 1.0f;
+            dl->color[2] = 0.0f;
+            /*
             vec3_t        fv, rv, uv;
             
             dl = CL_AllocDlight (i);
@@ -596,6 +613,7 @@ void CL_RelinkEntities (void)
             dl->color[0] = 0.0f;
             dl->color[1] = 1.0f;
             dl->color[2] = 0.0f;
+             */
         }
 		if (ent->effects & EF_BRIGHTLIGHT)
 		{			

@@ -7,7 +7,8 @@
 
 import UIKit
 
-class SelectLevelViewController: UIViewController {
+class SelectLevelViewController: UIViewController
+{
     
     var selectedGame = QuakeGame.Quake
     var selectedEpisode:Int = 1

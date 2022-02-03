@@ -17,7 +17,7 @@ void main()
 {
     mediump vec4 result = color * texture2D(texture, texcoords_fragment);
 
-    if (result.a > 0.66)
+    if (result.a > 0.1)//0.66
     {
         gl_FragColor = result;
     }
